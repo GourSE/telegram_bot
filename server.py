@@ -47,6 +47,10 @@ def text_prompt(chat_id, is_markdown):
             is_markdown = True
         elif is_markdown.lower() == "n":
             is_markdown = False
+        elif is_markdown == ":q":
+            print("abord\n")
+            time.sleep(0.5)
+            master(chat_id)
         else:
             print("Plese enter 'y' for yes and 'n' for no")
             text_prompt(chat_id, is_markdown)
