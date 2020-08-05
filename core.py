@@ -25,6 +25,11 @@ class telegram_bot():
         url = self.base + "sendMessage?chat_id={}&text={}&reply_to_message_id={}&parse_mode=MarkdownV2".format(chat_id, msg, message_id)
         if msg is not None:
             requests.get(url)
+    
+    def send_sticker(self, sticker_id, chat_id):
+        url = self.base + "sendSticker?chat_id={}&sticker={}".format(chat_id, sticker_id)
+        if sticker_id is not None:
+            requests.get(url)
 
     def read_token_from_config_file(self, config):
         parser = cfg.ConfigParser()
