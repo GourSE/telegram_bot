@@ -1,7 +1,7 @@
-from core import telegram_bot
+from core import telegram_bot_api
 import time
 
-bot = telegram_bot('config.cfg')
+bot = telegram_bot_api('config.cfg')
 
 
 def chat_id_prompt():
@@ -33,7 +33,7 @@ def sticker_prompt(chat_id):
         master(chat_id)
     else:
         try:
-            bot.send_sticker(fed, chat_id)
+            bot.send_sticker(chat_id, fed)
             sticker_prompt(chat_id)
         except:
             print("Something went wrong\nMake sure the sticker ID is correct\n")
@@ -43,9 +43,10 @@ def sticker_prompt(chat_id):
 def text_prompt(chat_id, is_markdown):
     if is_markdown == None:
         is_markdown = input("Do you want to use MarkdownV2 in this message?\n(Y/n): ")
-        if is_markdown.lower() == "y":
+        is_markdown = is_markdown[0].lower()
+        if is_markdown == "y":
             is_markdown = True
-        elif is_markdown.lower() == "n":
+        elif is_markdown == "n":
             is_markdown = False
         elif is_markdown == ":q":
             print("abord\n")
@@ -63,10 +64,10 @@ def text_prompt(chat_id, is_markdown):
     else:
         try:
             if is_markdown == True:
-                bot.send_message_markdown(fed, chat_id)
+                bot.send_message_markdown(chat_id, fed)
                 text_prompt(chat_id, is_markdown)
             else:
-                bot.send_message(fed, chat_id)
+                bot.send_message(chat_id, fed)
                 text_prompt(chat_id, is_markdown)
 
         except:
@@ -78,10 +79,12 @@ def text_prompt(chat_id, is_markdown):
 def master(last_chat_id):
     if last_chat_id is not None:
         fed = input("Do you want to use your last chat ID?\n(Y/n): ")
-        if fed.lower() == "y":
+        fed = fed[0].lower()
+        print(fed)
+        if fed == "y":
             chat_id = last_chat_id
         else:
-            chat_id = chat_id_prompt
+            chat_id = chat_id_prompt()
     else:
         chat_id = chat_id_prompt()
 

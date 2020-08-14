@@ -1,43 +1,69 @@
-# coding=utf-8
-
 import requests
 import json
 import configparser as cfg
 
-
-class telegram_bot():
-
-    def __init__(self, config):
-        self.token = self.read_token_from_config_file(config)
-        self.base = "https://api.telegram.org/bot{}/".format(self.token)
-
-    def send_message_markdown(self, msg, chat_id):
-        url = self.base + "sendMessage?chat_id={}&text={}&parse_mode=MarkdownV2".format(chat_id, msg)
-        if msg is not None:
-            requests.get(url)
-
-    def send_message(self, msg, chat_id):
-        url = self.base + "sendMessage?chat_id={}&text={}".format(chat_id, msg)
-        if msg is not None:
-            requests.get(url)
+class telegram_bot_api():
     
-    def reply_message(self, msg, chat_id, message_id):
-        url = self.base + "sendMessage?chat_id={}&text={}&reply_to_message_id={}&parse_mode=MarkdownV2".format(chat_id, msg, message_id)
-        if msg is not None:
-            requests.get(url)
+    def __init__(self, config_file):
+        self.token = self.read_config(config_file)
+        self.base = f"https://api.telegram.org/bot{self.token}/"
+
+    def read_config(self, config_file):
+        config = cfg.ConfigParser()
+        config.read(config_file)
+        return config.get("bot", "token")
     
-    def send_sticker(self, sticker_id, chat_id):
-        url = self.base + "sendSticker?chat_id={}&sticker={}".format(chat_id, sticker_id)
+    def send_message(self, chat_id, message_content):
+        url = f"{self.base}sendMessage?chat_id={chat_id}&text={message_content}"
+        if message_content is not None:
+            try:
+                requests.get(url)
+            except requests.exceptions.ConnectionError as error:
+                print(f"couldn't connect to server, more imformation:\n{error}")
+            except Exception as error:
+                print(f"something went wrong, more imformation:\n{error}")
+
+    def send_message_markdown(self, chat_id, message_content):
+        url = f"{self.base}sendMessage?chat_id={chat_id}&text={message_content}&parse_mode=MarkdownV2"
+        if message_content is not None:
+            try:
+                requests.get(url)
+            except requests.exceptions.ConnectionError as error:
+                print(f"couldn't connect to server, more imformation:\n{error}")
+            except Exception as error:
+                print(f"something went wrong, more imformation:\n{error}")
+
+    def send_sticker(self, chat_id, sticker_id):
+        url = f"{self.base}sendSticker?chat_id={chat_id}&sticker={sticker_id}"
         if sticker_id is not None:
-            requests.get(url)
+            try:
+                requests.get(url)
+            except requests.exceptions.ConnectionError as error:
+                print(f"couldn't connect to server, more imformation:\n{error}")
+            except Exception as error:
+                print(f"something went wrong, more imformation:\n{error}")
 
-    def read_token_from_config_file(self, config):
-        parser = cfg.ConfigParser()
-        parser.read(config)
-        return parser.get('creds', 'token')
-    
+    def get_updates(self, offset):
+        url = f"{self.base}getUpdates?timeout=100"
+        if offset is not None:
+            url = f"{url}&offset={int(offset) + 1}"
+        try:
+            r = requests.get(url)
+            update = json.loads(r.content)
+            return update
+        except requests.exceptions.ConnectionError as error:
+            print(f"couldn't connect to server, more imformation:\n{error}")
+        except Exception as error:
+            print(f"something went wrong, more imformation:\n{error}")
+
+
     def get_me(self):
-        url = self.base + "getMe"
-        r = requests.get(url)
-        return json.loads(r.content)
-        
+        url = f"{self.base}getMe"
+        try:
+            r = requests.get(url)
+            bot_info = json.loads(r.content)
+            return bot_info
+        except requests.exceptions.ConnectionError as error:
+            print(f"couldn't connect to server, more imformation:\n{error}")
+        except Exception as error:
+            print(f"something went wrong, more imformation:\n{error}")
