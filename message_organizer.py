@@ -55,15 +55,16 @@ class message():
 
         #chat
         chat_type = fed_message["chat"]["type"]
-        if chat_type == "group":
+        if chat_type == "group" or chat_type == "supergroup":
             self.is_group = True
         else:
             self.is_group = False
 
         if self.is_group:
             self.chat_title = fed_message["chat"]["title"]
+            self.chat_id = fed_message["chat"]["id"]
         else:
-            pass
+            self.chat_id = fed_message["from"]["id"]
 
 
         #no last name, I don't want to check if there's a lastname or not
@@ -76,7 +77,7 @@ class message():
 
         #userID
         self.usr_id = fed_message["from"]["id"]
-
+        
         #check if the message is a reply_to
         try:
             self.is_reply = True

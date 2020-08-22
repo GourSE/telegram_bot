@@ -41,7 +41,7 @@ def master():
             msg = morg(item)
             bash_output = f"message sent by {msg.usr_first}, content: {msg.content}"
             offset = msg.update_id
-            if str(msg.usr_id) != str(admin_id):
+            if str(msg.chat_id) != str(admin_id):
                 print(bash_output)
                 if msg.is_group:
                     pass
