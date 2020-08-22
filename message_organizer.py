@@ -41,7 +41,7 @@ class message():
             self.type = "text"
         except:
             try:
-                file_unique_id = fed_message["sticker"]["file_unique_id"]
+                file_unique_id = fed_message["sticker"]["file_id"]
                 self.content = f"sticker: {file_unique_id}"
                 self.type = "sticker"
             except:

@@ -23,8 +23,12 @@ def notify_admin(is_group, from_chat_id, message_id):
     bot.forward_message(admin_id, from_chat_id, message_id)
     return
 
-def reply_to_usr(message_content, reply_usr_id):
-    bot.send_message(reply_usr_id, message_content)
+def reply_to_usr(message_content, reply_usr_id, message_type):
+    if message_type == "text":
+        bot.send_message(reply_usr_id, message_content)
+    elif message_type == "sticker":
+        sticker_id = message_content.replace("sticker: ", "")
+        bot.send_sticker(reply_usr_id, sticker_id)
 
 def master():
     global admin_id
@@ -47,7 +51,7 @@ def master():
             elif msg.reply_is_forward:
                 bash_output = f"admin reply to {msg.reply_forward_usr_first}, content: {msg.content}"
                 print(bash_output)
-                send_thread = threading.Thread(target=reply_to_usr, args=(msg.content, msg.reply_forward_usr_id))
+                send_thread = threading.Thread(target=reply_to_usr, args=(msg.content, msg.reply_forward_usr_id, msg.type))
                 send_thread.start()
 
 
