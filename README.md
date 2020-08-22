@@ -1,9 +1,9 @@
-﻿#Telegram bot api message pusher
+﻿# Telegram bot api message pusher
 
 > simple script for you to push message with your bot using Telegram bot API
 
 
-###***To run the script***
+### ***To run the script***
 
 - install python
 
@@ -13,19 +13,19 @@
 
 - run 'message_pusher.py'
 
-###***Tips***
+### ***Tips***
 
 while the script asking you for the text and the sticker ID, you can type ***:q*** to restart script
 
 ------------
 
 
-#Telegram support bot
+# Telegram support bot
 
 > script for setting up a support bot
 
 
-###***To run the script***
+### ***To run the script***
 
 install python
 
@@ -37,7 +37,7 @@ install modules in 'requirements.txt'
 
 run 'support_bot.py'
 
-#### ***How does it work***
+### ***How does it work***
 
 if a user send a message to the bot, it'll forward it to the chat ID you inserted in 'config.cfg'
 the chat ID can be both your own user ID(your user ID is your chat ID) or a group chat ID
