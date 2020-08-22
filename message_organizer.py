@@ -4,14 +4,31 @@ import json
 #from multiprocessing import Process
 #import os
 
-bot = core.telegram_bot_api("config.cfg")
 class message():
 
-    #message, starting from "result" in getUpdate json
-    #only one message sent at a time
-
     def __init__(self, get_updates_result):
-        fed_message = get_updates_result["message"]
+
+        #check if fed is None type
+        if get_updates_result is None:
+            print('message_organizer: message fed is None type')
+            exit()
+        else:
+            #get_updates_result = json.loads(str(get_updates_result))
+            pass
+
+        try:
+            #intended
+            fed_message = get_updates_result["message"]
+
+            #update ID
+            self.update_id = get_updates_result["update_id"]
+
+        except:
+            #in case
+            fed_message = get_updates_result["result"]["message"]
+
+            #update ID
+            self.update_id = get_updates_result["update_id"]
 
         #try to get message content in json
         #doing it one by one with try except
@@ -39,14 +56,20 @@ class message():
         #chat
         chat_type = fed_message["chat"]["type"]
         if chat_type == "group":
-            is_group = True
+            self.is_group = True
         else:
-            is_group = False
+            self.is_group = False
 
-        if is_group:
+        if self.is_group:
             self.chat_title = fed_message["chat"]["title"]
         else:
             pass
+
+
+        #no last name, I don't want to check if there's a lastname or not
+        #same as user ID, the t.me/ID one
+        #probably will be included in the future
+        self.usr_first = fed_message["from"]["first_name"]
 
         #message ID
         self.message_id = fed_message["message_id"]
@@ -54,19 +77,22 @@ class message():
         #userID
         self.usr_id = fed_message["from"]["id"]
 
-        #no last name, I don't want to check if there's a lastname or not
-        #same as user ID, the t.me/ID one
-        #probably will be included in the future
-        self.usr_first = fed_message["from"]["first_name"]
-
         #check if the message is a reply_to
         try:
             self.is_reply = True
-            self.reply_message_id = fed_message["message_id"]
-            self.reply_usr_id = fed_message["from"]["id"]
-            self.reply_usr_first = fed_message["from"]["first_name"]
+            self.reply_message_id = fed_message["reply_to_message"]["message_id"]
+            self.reply_usr_id = fed_message["reply_to_message"]["from"]["id"]
+            self.reply_usr_first = fed_message["reply_to_message"]["from"]["first_name"]
+            try:
+                #check if message is forwared
+                self.reply_forward_usr_id = fed_message["reply_to_message"]["forward_from"]["id"]
+                self.reply_forward_usr_first = fed_message["reply_to_message"]["forward_from"]["first_name"]
+                self.reply_is_forward = True
+            except:
+                self.reply_is_forward = False
         except:
             self.is_reply = False
+            self.reply_is_forward = False
 
     #push expermental lol
     def message_pusher(self):
