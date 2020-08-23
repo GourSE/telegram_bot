@@ -27,20 +27,22 @@ while the script asking you for the text and the sticker ID, you can type ***:q*
 
 ### ***To run the script***
 
-install python
+- install python
 
-put your bot token in 'config.cfg'
+- put your bot token in 'config.cfg'
 
-put admin chat ID or user ID in 'config.cfg'
+- put admin chat ID or user ID in 'config.cfg'
 
-install modules in 'requirements.txt'
+- install modules in 'requirements.txt'
 
-run 'support_bot.py'
+- run 'support_bot.py'
 
 ### ***How does it work***
 
 if a user send a message to the bot, it'll forward it to the chat ID you inserted in 'config.cfg'
+
 the chat ID can be both your own user ID(your user ID is your chat ID) or a group chat ID
 
-to reply to the user, you will have to reply to the forwared message
+to reply to the user, you simply reply to the forwared message
+
 your message will be sent to the user directly
