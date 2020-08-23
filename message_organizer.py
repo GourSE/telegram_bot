@@ -64,6 +64,7 @@ class message():
             self.chat_title = fed_message["chat"]["title"]
             self.chat_id = fed_message["chat"]["id"]
         else:
+            self.chat_title = None
             self.chat_id = fed_message["from"]["id"]
 
 
@@ -90,8 +91,15 @@ class message():
                 self.reply_forward_usr_first = fed_message["reply_to_message"]["forward_from"]["first_name"]
                 self.reply_is_forward = True
             except:
+                self.reply_forward_usr_id = None
+                self.reply_forward_usr_first = None
                 self.reply_is_forward = False
         except:
+            self.reply_forward_usr_id = None
+            self.reply_forward_usr_first = None
+            self.reply_message_id = None
+            self.reply_usr_id = None
+            self.reply_usr_first = None
             self.is_reply = False
             self.reply_is_forward = False
 
