@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from message_organizer import message as morg
 import configparser as cfg
 from core import telegram_bot_api

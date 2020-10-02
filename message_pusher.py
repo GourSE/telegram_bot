@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from core import telegram_bot_api
 import time
 
