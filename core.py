@@ -14,6 +14,15 @@ class telegram_bot_api():
         config = cfg.ConfigParser()
         config.read(config_file)
         return config.get("bot", "token")
+
+    def send_chat_action(self, chat_id, action):
+        url = f"{self.base}sendChatAction?chat_id={chat_id}&action={action}"
+        try:
+            requests.get(url)
+        except requests.exceptions.ConnectionError as error:
+            print(f"couldn't connect to server, more imformation:\n{error}")
+        except Exception as error:
+            print(f"something went wrong, more imformation:\n{error}")
     
     def forward_message(self, chat_id, from_chat_id, message_id):
         url = f"{self.base}forwardMessage?chat_id={chat_id}&from_chat_id={from_chat_id}&message_id={message_id}"
