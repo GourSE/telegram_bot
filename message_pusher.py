@@ -1,9 +1,29 @@
 # coding=utf-8
 
 from core import telegram_bot_api
+import configparser as cfg
 import time
+import random
 
-bot = telegram_bot_api('config.cfg')
+bot = telegram_bot_api("config.cfg")
+
+# Get config file for settings
+
+config = cfg.ConfigParser()
+config.read("config.cfg")
+is_send_typing = config.get("settings", "send_typing")
+is_markdown = config.get("settings", "use_markdown")
+
+# set user settings
+if is_send_typing.lower() == "true":
+    is_send_typing = True
+elif is_send_typing.lower() == "false":
+    is_send_typing = False
+
+if is_markdown.lower() == "true":
+    is_markdown = True
+elif is_markdown.lower() == "false":
+    is_markdown = False
 
 
 def chat_id_prompt():
@@ -42,21 +62,28 @@ def sticker_prompt(chat_id):
             time.sleep(0.5)
             sticker_prompt(chat_id)
 
+def send_typing(text, chat_id):
+    lenght = len(text)
+    loop = int(lenght * 0.2)
+    while loop > 0:
+        loop -= 1
+        bot.send_chat_action(chat_id, "typing")
+
 def text_prompt(chat_id, is_markdown):
-    if is_markdown == None:
-        is_markdown = input("Do you want to use MarkdownV2 in this message?\n(Y/n): ")
-        is_markdown = is_markdown[0].lower()
-        if is_markdown == "y":
-            is_markdown = True
-        elif is_markdown == "n":
-            is_markdown = False
-        elif is_markdown == ":q":
-            print("abord\n")
-            time.sleep(0.5)
-            master(chat_id)
-        else:
-            print("Plese enter 'y' for yes and 'n' for no")
-            text_prompt(chat_id, is_markdown)
+    # if is_markdown == None:
+    #     is_markdown = input("Do you want to use MarkdownV2 in this message?\n(Y/n): ")
+    #     is_markdown = is_markdown[0].lower()
+    #     if is_markdown == "y":
+    #         is_markdown = True
+    #     elif is_markdown == "n":
+    #         is_markdown = False
+    #     elif is_markdown == ":q":
+    #         print("abord\n")
+    #         time.sleep(0.5)
+    #         master(chat_id)
+    #     else:
+    #         print("Plese enter 'y' for yes and 'n' for no")
+    #         text_prompt(chat_id, is_markdown)
 
     fed = input("Enter text message: ")
     if fed == ":q":
@@ -65,15 +92,29 @@ def text_prompt(chat_id, is_markdown):
         master(chat_id)
     else:
         try:
-            if is_markdown == True:
-                bot.send_message_markdown(chat_id, fed)
-                text_prompt(chat_id, is_markdown)
-            else:
-                bot.send_message(chat_id, fed)
-                text_prompt(chat_id, is_markdown)
+            if is_markdown:
+                # Check if send_typing is enabled
 
-        except:
-            print("Something went wrong, are you connected?")
+                if is_send_typing:
+                    send_typing(fed, chat_id)
+                    bot.send_message_markdown(chat_id, fed)
+                    text_prompt(chat_id, is_markdown)
+                else:
+                    bot.send_message_markdown(chat_id, fed)
+                    text_prompt(chat_id, is_markdown)
+
+            else:
+
+                if is_send_typing:
+                    send_typing(fed, chat_id)
+                    bot.send_message(chat_id, fed)
+                    text_prompt(chat_id, is_markdown)
+                else:
+                    bot.send_message(chat_id, fed)
+                    text_prompt(chat_id, is_markdown)
+
+        except Exception as ERROR:
+            print(f"Something went wrong, {ERROR}")
             time.sleep(0.5)
             text_prompt(chat_id, None)
 

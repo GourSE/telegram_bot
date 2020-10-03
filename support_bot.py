@@ -11,7 +11,7 @@ bot = telegram_bot_api("config.cfg")
 
 config = cfg.ConfigParser()
 config.read("config.cfg")
-admin_id = config.get("support", "admin_id")
+admin_id = config.get("settings", "admin_id")
 
 def notify_admin(is_group, from_chat_id, message_id):
     global admin_id

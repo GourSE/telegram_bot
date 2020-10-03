@@ -17,6 +17,10 @@
 
 while the script asking you for the text and the sticker ID, you can type ***:q*** to restart script
 
+you can choose to send typing action to chat by changing 'config.cfg' under [settings] > [send_typing], the default is set to True
+
+you can also choose to use markdown from 'config.cfg' under [settings] > [use_markdown], the default is set to False
+
 ------------
 
 
@@ -31,7 +35,7 @@ while the script asking you for the text and the sticker ID, you can type ***:q*
 
 - put your bot token in 'config.cfg'
 
-- put admin chat ID or user ID in 'config.cfg'
+- put admin chat ID or user ID in 'config.cfg' under [settings] > [admin_id]
 
 - install modules in 'requirements.txt'
 
