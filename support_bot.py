@@ -53,14 +53,14 @@ def master():
                             notify_thread.start()
                         
                         except RuntimeError as error:
-                            print(f"ERROR: message postponed\nRuntimeError: {error}")
+                            print(f"ERROR: RuntimeError, message postponed")
                             time.sleep(3)
                             notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id))
                             notify_thread.start()
                             print("thread started")
                         
                         except Exception as error:
-                            print(f"ERROR: unknown error, the script will stop\n{error}")
+                            print(f"\nERROR: unknown error, the script will end\n\n{error}")
                             exit()
                 elif msg.reply_is_forward:
                     bash_output = f"admin replied to {msg.reply_forward_usr_first}, content: {msg.content}"
@@ -70,24 +70,24 @@ def master():
                         send_thread.start()
 
                     except RuntimeError as error:
-                        print(f"ERROR: message postponed\nRuntimeError: {error}")
+                        print(f"\nERROR: message postponed\nRuntimeError: \n\n{error}\n\n")
                         send_thread = threading.Thread(target=reply_to_usr, args=(msg.content, msg.reply_forward_usr_id, msg.type))
                         send_thread.start()
                         print("thread started")
 
                     except Exception as error:
-                        print(f"ERROR: unknown error, the script will stop\n{error}")
+                        print(f"\nERROR: unknown error, the script will end\n\n{error}")
                         exit()
 
         except KeyError as error:
-            print(f"ERROR: no bot token or another getUpdate session running\nplese check 'config.cfg'\n\nKeyError: {error}\n")
+            print(f"\nERROR: no bot token or another getUpdate session running\nplese check 'config.cfg'\n\nKeyError: \n\n{error}\n\n")
 
         except RuntimeError as error:
-            print(f"ERROR: RuntimeError: {error}\nwill continue looping")
+            print(f"\nERROR: RuntimeError: \n\n{error}\n\nwill continue looping\n\n")
             time.sleep(3)
 
         except Exception as error:
-            print(f"ERROR: unknown error, the script will stop\n{error}")
+            print(f"\nERROR: unknown error, the script will stop\n\n{error}\n\n")
             exit()
 
 

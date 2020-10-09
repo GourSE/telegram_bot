@@ -20,18 +20,18 @@ class telegram_bot_api():
         try:
             requests.get(url)
         except requests.exceptions.ConnectionError as error:
-            print(f"couldn't connect to server, more imformation:\n{error}")
+            print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
         except Exception as error:
-            print(f"something went wrong, more imformation:\n{error}")
+            print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
     
     def forward_message(self, chat_id, from_chat_id, message_id):
         url = f"{self.base}forwardMessage?chat_id={chat_id}&from_chat_id={from_chat_id}&message_id={message_id}"
         try:
             requests.get(url)
         except requests.exceptions.ConnectionError as error:
-            print(f"couldn't connect to server, more imformation:\n{error}")
+            print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
         except Exception as error:
-            print(f"something went wrong, more imformation:\n{error}")
+            print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
 
     def send_message(self, chat_id, message_content):
         url = f"{self.base}sendMessage?chat_id={chat_id}&text={message_content}"
@@ -39,9 +39,9 @@ class telegram_bot_api():
             try:
                 requests.get(url)
             except requests.exceptions.ConnectionError as error:
-                print(f"couldn't connect to server, more imformation:\n{error}")
+                print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
             except Exception as error:
-                print(f"something went wrong, more imformation:\n{error}")
+                print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
 
     def send_message_markdown(self, chat_id, message_content):
         url = f"{self.base}sendMessage?chat_id={chat_id}&text={message_content}&parse_mode=MarkdownV2"
@@ -49,9 +49,9 @@ class telegram_bot_api():
             try:
                 requests.get(url)
             except requests.exceptions.ConnectionError as error:
-                print(f"couldn't connect to server, more imformation:\n{error}")
+                print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
             except Exception as error:
-                print(f"something went wrong, more imformation:\n{error}")
+                print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
 
     def send_sticker(self, chat_id, sticker_id):
         url = f"{self.base}sendSticker?chat_id={chat_id}&sticker={sticker_id}"
@@ -59,9 +59,9 @@ class telegram_bot_api():
             try:
                 requests.get(url)
             except requests.exceptions.ConnectionError as error:
-                print(f"couldn't connect to server, more imformation:\n{error}")
+                print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
             except Exception as error:
-                print(f"something went wrong, more imformation:\n{error}")
+                print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
 
     def get_updates(self, offset):
         url = f"{self.base}getUpdates?timeout=100"
@@ -72,9 +72,9 @@ class telegram_bot_api():
             update = json.loads(r.content)
             return update
         except requests.exceptions.ConnectionError as error:
-            print(f"couldn't connect to server, more imformation:\n{error}")
+            print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
         except Exception as error:
-            print(f"something went wrong, more imformation:\n{error}")
+            print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
 
 
     def get_me(self):
@@ -84,6 +84,6 @@ class telegram_bot_api():
             bot_info = json.loads(r.content)
             return bot_info
         except requests.exceptions.ConnectionError as error:
-            print(f"couldn't connect to server, more imformation:\n{error}")
+            print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
         except Exception as error:
-            print(f"something went wrong, more imformation:\n{error}")
+            print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")

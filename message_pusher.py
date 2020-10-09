@@ -114,7 +114,7 @@ def text_prompt(chat_id, is_markdown):
                     text_prompt(chat_id, is_markdown)
 
         except Exception as ERROR:
-            print(f"Something went wrong, {ERROR}")
+            print(f"\nSomething went wrong, more info:\n{ERROR}\n\n")
             time.sleep(0.5)
             text_prompt(chat_id, None)
 
