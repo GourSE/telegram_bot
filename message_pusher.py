@@ -26,19 +26,19 @@ elif is_markdown.lower() == "false":
     is_markdown = False
 
 
-def chat_id_prompt():
-    fed = input("Ener chat ID: ")
+# def chat_id_prompt():
+#     fed = input("Ener chat ID: ")
 
-    # the chat ID could be user's ID
+#     the chat ID could be user's ID
 
-    # if fed.__len__() < 9:
-    #     print("Are you sure this is a chat id?\n")
-    #     time.sleep(0.5)
-    #     return chat_id_prompt()
-    # else:
-    #     return fed
+#     if fed.__len__() < 9:
+#         print("Are you sure this is a chat id?\n")
+#         time.sleep(0.5)
+#         return chat_id_prompt()
+#     else:
+#         return fed
 
-    return fed
+#     return fed
 
 def message_type_prompt():
     fed = input("\nMessage types:\ntext(t)\nsticker(s)\nEnter message type: ")
@@ -132,9 +132,9 @@ def master(last_chat_id):
         if fed == "y":
             chat_id = last_chat_id
         else:
-            chat_id = chat_id_prompt()
+            chat_id = input("Ener chat ID: ")
     else:
-        chat_id = chat_id_prompt()
+        chat_id = input("Ener chat ID: ")
 
     message_type = message_type_prompt()
     print("You are going to send {} message(s) to chat id: {}".format(message_type, chat_id))
