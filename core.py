@@ -24,6 +24,16 @@ class telegram_bot_api():
         except Exception as error:
             print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
     
+    def reply_message(self, chat_id, message_content, reply_message_id):
+        url = f"{self.base}sendMessage?chat_id={chat_id}&text={message_content}&reply_to_message_id={reply_message_id}&parse_mode=MarkdownV2"
+        if message_content is not None:
+            try:
+                requests.get(url)
+            except requests.exceptions.ConnectionError as error:
+                print(f"couldn't connect to server, more imformation:\n{error}")
+            except Exception as error:
+                print(f"something went wrong, more imformation:\n{error}")
+    
     def forward_message(self, chat_id, from_chat_id, message_id):
         url = f"{self.base}forwardMessage?chat_id={chat_id}&from_chat_id={from_chat_id}&message_id={message_id}"
         try:

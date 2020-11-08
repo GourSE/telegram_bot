@@ -1,5 +1,3 @@
-# coding=utf-8
-
 import core
 #import time
 import json
@@ -17,20 +15,25 @@ class message():
         else:
             #get_updates_result = json.loads(str(get_updates_result))
             pass
-
         try:
-            #intended
-            fed_message = get_updates_result["message"]
+            try:
+                #intended
+                fed_message = get_updates_result["message"]
 
-            #update ID
-            self.update_id = get_updates_result["update_id"]
+                #update ID
+                self.update_id = get_updates_result["update_id"]
 
+            except:
+                #in case
+                fed_message = get_updates_result["result"]["message"]
+
+                #update ID
+                self.update_id = get_updates_result["update_id"]
         except:
-            #in case
-            fed_message = get_updates_result["result"]["message"]
+            print("ERROR: can't get result")
+            self.content = None
+            return
 
-            #update ID
-            self.update_id = get_updates_result["update_id"]
 
         #try to get message content in json
         #doing it one by one with try except
@@ -85,6 +88,14 @@ class message():
         try:
             self.is_reply = True
             self.reply_message_id = fed_message["reply_to_message"]["message_id"]
+            try:
+                self.reply_message_text = fed_message["reply_to_message"]["text"]
+                self.reply_message_is_text = True
+            except:
+                self.reply_message_text = None
+                # for my own use, I mean the telegram_bot script
+                # I need is_text only for the chat ID, this may or may not be changed
+                self.reply_message_is_text = False
             self.reply_usr_id = fed_message["reply_to_message"]["from"]["id"]
             self.reply_usr_first = fed_message["reply_to_message"]["from"]["first_name"]
             try:
@@ -98,12 +109,15 @@ class message():
                 self.reply_is_forward = False
         except:
             self.reply_forward_usr_id = None
+            self.reply_message_is_text = False
             self.reply_forward_usr_first = None
             self.reply_message_id = None
             self.reply_usr_id = None
             self.reply_usr_first = None
             self.is_reply = False
             self.reply_is_forward = False
+            self.reply_message_text = None
+            
 
     #push expermental lol
     def message_pusher(self):
