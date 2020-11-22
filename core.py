@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from colours import colour
 import requests
 import json
 import configparser as cfg
@@ -13,65 +14,116 @@ class telegram_bot_api():
     def read_config(self, config_file):
         config = cfg.ConfigParser()
         config.read(config_file)
-        return config.get("bot", "token")
+        token = config.get("bot", "token")
+        if token == "bot token here" or token == "":
+            token = input(f"\
+{colour.RED}You did not enter a bot token{colour.reset}\n\
+please put your bot token in {colour.yellow}config.cfg{colour.reset} under {colour.blue}[bot] > [token]{colour.reset}\n\
+The bot token you enter now will not be saved\n\
+Enter bot token: ")
+            return token
+
+        return token
 
     def send_chat_action(self, chat_id, action):
         url = f"{self.base}sendChatAction?chat_id={chat_id}&action={action}"
         try:
-            requests.get(url)
+            r = requests.get(url)
+            fed = json.loads(r.content)
+            if self.check_ok(fed):
+                return True
+            else:
+                return False
         except requests.exceptions.ConnectionError as error:
             print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
+            return False
         except Exception as error:
             print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
+            return False
     
     def reply_message(self, chat_id, message_content, reply_message_id):
         url = f"{self.base}sendMessage?chat_id={chat_id}&text={message_content}&reply_to_message_id={reply_message_id}&parse_mode=MarkdownV2"
         if message_content is not None:
             try:
-                requests.get(url)
+                r = requests.get(url)
+                fed = json.loads(r.content)
+                if self.check_ok(fed):
+                    return True
+                else:
+                    return False
             except requests.exceptions.ConnectionError as error:
                 print(f"couldn't connect to server, more imformation:\n{error}")
+                return False
             except Exception as error:
                 print(f"something went wrong, more imformation:\n{error}")
+                return False
     
     def forward_message(self, chat_id, from_chat_id, message_id):
         url = f"{self.base}forwardMessage?chat_id={chat_id}&from_chat_id={from_chat_id}&message_id={message_id}"
         try:
-            requests.get(url)
+            r = requests.get(url)
+            fed = json.loads(r.content)
+            if self.check_ok(fed):
+                return True
+            else:
+                return False
         except requests.exceptions.ConnectionError as error:
             print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
+            return False
         except Exception as error:
             print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
+            return False
 
     def send_message(self, chat_id, message_content):
         url = f"{self.base}sendMessage?chat_id={chat_id}&text={message_content}"
         if message_content is not None:
             try:
-                requests.get(url)
+                r = requests.get(url)
+                fed = json.loads(r.content)
+                if self.check_ok(fed):
+                    return True
+                else:
+                    return False
             except requests.exceptions.ConnectionError as error:
                 print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
+                return False
             except Exception as error:
                 print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
+                return False
 
     def send_message_markdown(self, chat_id, message_content):
         url = f"{self.base}sendMessage?chat_id={chat_id}&text={message_content}&parse_mode=MarkdownV2"
         if message_content is not None:
             try:
-                requests.get(url)
+                r = requests.get(url)
+                fed = json.loads(r.content)
+                if self.check_ok(fed):
+                    return True
+                else:
+                    return False
             except requests.exceptions.ConnectionError as error:
                 print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
+                return False
             except Exception as error:
                 print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
+                return False
 
     def send_sticker(self, chat_id, sticker_id):
         url = f"{self.base}sendSticker?chat_id={chat_id}&sticker={sticker_id}"
         if sticker_id is not None:
             try:
-                requests.get(url)
+                r = requests.get(url)
+                fed = json.loads(r.content)
+                if self.check_ok(fed):
+                    return True
+                else:
+                    return False
             except requests.exceptions.ConnectionError as error:
                 print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
+                return False
             except Exception as error:
                 print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
+                return False
 
     def get_updates(self, offset):
         url = f"{self.base}getUpdates?timeout=100"
@@ -80,11 +132,16 @@ class telegram_bot_api():
         try:
             r = requests.get(url)
             update = json.loads(r.content)
-            return update
+            if self.check_ok(update):
+                return update
+            else:
+                return False
         except requests.exceptions.ConnectionError as error:
             print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
+            return False
         except Exception as error:
             print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
+            return False
 
 
     def get_me(self):
@@ -92,8 +149,22 @@ class telegram_bot_api():
         try:
             r = requests.get(url)
             bot_info = json.loads(r.content)
-            return bot_info
+            if self.check_ok(bot_info):
+                return bot_info
+            else:
+                return False
         except requests.exceptions.ConnectionError as error:
             print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
+            return False
         except Exception as error:
             print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
+            return False
+        
+    def check_ok(self, fed_json):
+        ok = fed_json["ok"]
+        # print(fed_json)
+        if str(ok).lower() == "false":
+            print(f"\nFrom {colour.BLUE}Telegram Bot API{colour.reset}:\n{colour.WARNING}{fed_json}{colour.reset}\n")
+            return False
+        else:
+            return True

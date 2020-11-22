@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from colours import colour
 from message_organizer import message as morg
 import configparser as cfg
 from core import telegram_bot_api
@@ -13,6 +14,17 @@ config = cfg.ConfigParser()
 config.read("config.cfg")
 admin_id = config.get("settings", "admin_id")
 
+if admin_id == "admin chat ID here":
+    
+    admin_id = input(f"\
+\n{colour.RED}You did not enter an admin chat ID{colour.reset}\n\
+An admin chat ID can be both a group or a user chat ID\n\
+The chat ID you enter now will not be saved\n\
+Enter admin chat ID: ")
+
+else:
+    pass
+
 def notify_admin(is_group, from_chat_id, message_id):
     global admin_id
 
@@ -21,15 +33,28 @@ def notify_admin(is_group, from_chat_id, message_id):
     else:
         pass
 
-    bot.forward_message(admin_id, from_chat_id, message_id)
+    s = bot.forward_message(admin_id, from_chat_id, message_id)
+    if s:
+        pass
+    else:
+        print(f"forwarding message: {colour.BOLD}{message_id}{colour.reset} to admin is {colour.RED}unsuccessful{colour.reset}\n{colour.YELLOW}please check if the admin chat ID is correct{colour.reset}\n ")
+
     return
 
 def reply_to_usr(message_content, reply_usr_id, message_type):
     if message_type == "text":
-        bot.send_message(reply_usr_id, message_content)
+        s = bot.send_message(reply_usr_id, message_content)
+        if s:
+            print(f"admin replied to {reply_usr_id}, content: {colour.BOLD}{message_content}{colour.reset}\n")
+        else:
+            print(f"message: {colour.BOLD}{message_content}{colour.reset} for {reply_usr_id} {colour.RED}not sent{colour.reset}\n ")
     elif message_type == "sticker":
         sticker_id = message_content.replace("sticker: ", "")
-        bot.send_sticker(reply_usr_id, sticker_id)
+        s = bot.send_sticker(reply_usr_id, sticker_id)
+        if s:
+            print(f"{colour.BOLD}{message_content}{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}{message_content}{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
 def master():
     global admin_id
@@ -64,7 +89,7 @@ def master():
                             exit()
                 elif msg.reply_is_forward:
                     bash_output = f"admin replied to {msg.reply_forward_usr_first}, content: {msg.content}"
-                    print(bash_output)
+                    #print(bash_output)
                     try:
                         send_thread = threading.Thread(target=reply_to_usr, args=(msg.content, msg.reply_forward_usr_id, msg.type))
                         send_thread.start()

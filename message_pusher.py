@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from colours import colour
 from core import telegram_bot_api
 import configparser as cfg
 import time
@@ -48,11 +49,12 @@ def message_type_prompt():
     elif fed == "sticker" or fed == "s":
         return "sticker"
     else:
-        print("{} is not a message type\n".format(fed))
+        print("\n{}{} is not a message type{}\n".format(colour.RED, fed, colour.reset))
         time.sleep(0.5)
         return message_type_prompt()
 
 def sticker_prompt(chat_id):
+    success = None
     fed = input("Enter sticker ID: ")
     if fed == ":q":
         print("abord\n")
@@ -60,7 +62,11 @@ def sticker_prompt(chat_id):
         master(chat_id)
     else:
         try:
-            bot.send_sticker(chat_id, fed)
+            success = bot.send_sticker(chat_id, fed)
+            if success:
+                print("sticker sent")
+            else:
+                print("sticker not sent\n")
             sticker_prompt(chat_id)
         except:
             print("Something went wrong\nMake sure the sticker ID is correct\n")
@@ -75,6 +81,9 @@ def send_typing(text, chat_id):
         bot.send_chat_action(chat_id, "typing")
 
 def text_prompt(chat_id, is_markdown):
+    #this is for checking errors
+    success = None
+    
     # if is_markdown == None:
     #     is_markdown = input("Do you want to use MarkdownV2 in this message?\n(Y/n): ")
     #     is_markdown = is_markdown[0].lower()
@@ -102,20 +111,36 @@ def text_prompt(chat_id, is_markdown):
 
                 if is_send_typing:
                     send_typing(fed, chat_id)
-                    bot.send_message_markdown(chat_id, fed)
+                    success = bot.send_message_markdown(chat_id, fed)
+                    if success:
+                        print(f"message: \"{fed}\" sent")
+                    else:
+                        print(f"message: \"{fed}\" not send\n")
                     text_prompt(chat_id, is_markdown)
                 else:
-                    bot.send_message_markdown(chat_id, fed)
+                    success = bot.send_message_markdown(chat_id, fed)
+                    if success:
+                        print(f"message: \"{fed}\" sent")
+                    else:
+                        print(f"message: \"{fed}\" not send\n")
                     text_prompt(chat_id, is_markdown)
 
             else:
 
                 if is_send_typing:
                     send_typing(fed, chat_id)
-                    bot.send_message(chat_id, fed)
+                    success = bot.send_message(chat_id, fed)
+                    if success:
+                        print(f"message: \"{fed}\" sent")
+                    else:
+                        print(f"message: \"{fed}\" not send\n")
                     text_prompt(chat_id, is_markdown)
                 else:
-                    bot.send_message(chat_id, fed)
+                    success = bot.send_message(chat_id, fed)
+                    if success:
+                        print(f"message: \"{fed}\" sent")
+                    else:
+                        print(f"message: \"{fed}\" not send\n")
                     text_prompt(chat_id, is_markdown)
 
         except Exception as ERROR:
@@ -143,7 +168,7 @@ def master(last_chat_id):
     elif message_type == "text":
         text_prompt(chat_id, None)
     else:
-        print("ERROR: MESSAGE_TYPE_INVALID")
+        print(f"{colour.RED}ERROR: MESSAGE_TYPE_INVALID{colour.reset}")
 
 
 master(None)

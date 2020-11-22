@@ -1,8 +1,7 @@
+# coding=utf-8
+
 import core
-#import time
 import json
-#from multiprocessing import Process
-#import os
 
 class message():
 
@@ -69,7 +68,7 @@ class message():
             self.chat_title = fed_message["chat"]["title"]
             self.chat_id = fed_message["chat"]["id"]
         else:
-            self.chat_title = None
+            self.chat_title = fed_message["from"]["first_name"]
             self.chat_id = fed_message["from"]["id"]
 
 
@@ -93,8 +92,6 @@ class message():
                 self.reply_message_is_text = True
             except:
                 self.reply_message_text = None
-                # for my own use, I mean the telegram_bot script
-                # I need is_text only for the chat ID, this may or may not be changed
                 self.reply_message_is_text = False
             self.reply_usr_id = fed_message["reply_to_message"]["from"]["id"]
             self.reply_usr_first = fed_message["reply_to_message"]["from"]["first_name"]
