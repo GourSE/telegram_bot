@@ -5,7 +5,27 @@ import json
 
 class message():
 
+
     def __init__(self, get_updates_result):
+        # define datas
+        self.update_id =                        None
+        self.content =                          None
+        self.type =                             None
+        self.is_group =                         None
+        self.chat_title =                       None
+        self.chat_id =                          None
+        self.usr_first =                        None
+        self.message_id =                       None
+        self.usr_id =                           None
+        self.is_reply =                         None
+        self.reply_message_id =                 None
+        self.reply_message_text =               None
+        self.reply_message_is_text =            None
+        self.reply_usr_id =                     None
+        self.reply_usr_first =                  None
+        self.reply_forward_usr_id =             None
+        self.reply_forward_usr_first =          None
+        self.reply_is_forward =                 None
 
         #check if fed is None type
         if get_updates_result is None:
