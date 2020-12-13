@@ -5,7 +5,6 @@ import json
 
 class message():
 
-
     def __init__(self, get_updates_result):
         # define datas
         self.update_id =                        None
