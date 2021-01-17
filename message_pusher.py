@@ -81,7 +81,6 @@ def send_typing(text, chat_id):
         bot.send_chat_action(chat_id, "typing")
 
 def text_prompt(chat_id, is_markdown):
-    #this is for checking errors
     success = None
     
     # if is_markdown == None:
@@ -106,42 +105,23 @@ def text_prompt(chat_id, is_markdown):
         master(chat_id)
     else:
         try:
-            if is_markdown:
-                # Check if send_typing is enabled
 
-                if is_send_typing:
-                    send_typing(fed, chat_id)
-                    success = bot.send_message_markdown(chat_id, fed)
-                    if success:
-                        print(f"message: \"{fed}\" sent")
-                    else:
-                        print(f"message: \"{fed}\" not send\n")
-                    text_prompt(chat_id, is_markdown)
+            if is_send_typing:
+                send_typing(fed, chat_id)
+                success = bot.send_message(chat_id, fed, None, is_markdown)
+                if success:
+                    print(f"message: \"{fed}\" sent")
                 else:
-                    success = bot.send_message_markdown(chat_id, fed)
-                    if success:
-                        print(f"message: \"{fed}\" sent")
-                    else:
-                        print(f"message: \"{fed}\" not send\n")
-                    text_prompt(chat_id, is_markdown)
-
+                    print(f"message: \"{fed}\" not send\n")
+                text_prompt(chat_id, is_markdown)
             else:
-
-                if is_send_typing:
-                    send_typing(fed, chat_id)
-                    success = bot.send_message(chat_id, fed)
-                    if success:
-                        print(f"message: \"{fed}\" sent")
-                    else:
-                        print(f"message: \"{fed}\" not send\n")
-                    text_prompt(chat_id, is_markdown)
+                success = bot.send_message(chat_id, fed, None, is_markdown)
+                if success:
+                    print(f"message: \"{fed}\" sent")
                 else:
-                    success = bot.send_message(chat_id, fed)
-                    if success:
-                        print(f"message: \"{fed}\" sent")
-                    else:
-                        print(f"message: \"{fed}\" not send\n")
-                    text_prompt(chat_id, is_markdown)
+                    print(f"message: \"{fed}\" not send\n")
+                text_prompt(chat_id, is_markdown)
+
 
         except Exception as ERROR:
             print(f"\nSomething went wrong, more info:\n{ERROR}\n\n")
