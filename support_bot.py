@@ -41,7 +41,7 @@ def notify_admin(is_group, from_chat_id, message_id):
 
     return
 
-def reply_to_usr(message_content, reply_usr_id, message_type):
+def reply_to_usr(message_content, reply_usr_id, message_type, caption):
     if message_type == "text":
         s = bot.send_message(reply_usr_id, message_content, None, False)
         if s:
@@ -52,9 +52,46 @@ def reply_to_usr(message_content, reply_usr_id, message_type):
         sticker_id = message_content.replace("sticker: ", "")
         s = bot.send_sticker(reply_usr_id, sticker_id)
         if s:
-            print(f"{colour.BOLD}{message_content}{colour.reset} sent\n")
+            print(f"{colour.BOLD}sticker{colour.reset} sent\n")
         else:
-            print(f"{colour.BOLD}{message_content}{colour.reset} {colour.RED}not sent{colour.reset}\n")
+            print(f"{colour.BOLD}sticker{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+    elif message_type == "photo":
+        s = bot.send_photo(reply_usr_id, photo_id=message_content, text=caption)
+        if s:
+            print(f"{colour.BOLD}photo{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}photo{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+    elif message_type == "document":
+        s = bot.send_document(reply_usr_id, document_id=message_content, text=caption)
+        if s:
+            print(f"{colour.BOLD}document{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}document{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+    elif message_type == "animation":
+        s = bot.send_animation(reply_usr_id, animation_id=message_content, text=caption)
+        if s:
+            print(f"{colour.BOLD}animation{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}animation{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+    elif message_type == "audio":
+        s = bot.send_audio(reply_usr_id, audio_id=message_content, text=caption)
+        if s:
+            print(f"{colour.BOLD}audio{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}audio{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+    elif message_type == "video":
+        s = bot.send_video(reply_usr_id, video_id=message_content, text=caption)
+        if s:
+            print(f"{colour.BOLD}video{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}video{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+
 
 def master():
     global admin_id
@@ -91,12 +128,12 @@ def master():
                     bash_output = f"admin replied to {msg.reply_forward_usr_first}, content: {msg.content}"
                     #print(bash_output)
                     try:
-                        send_thread = threading.Thread(target=reply_to_usr, args=(msg.content, msg.reply_forward_usr_id, msg.type))
+                        send_thread = threading.Thread(target=reply_to_usr, args=(msg.content, msg.reply_forward_usr_id, msg.type, msg.caption))
                         send_thread.start()
 
                     except RuntimeError as error:
                         print(f"\nERROR: message postponed\nRuntimeError: \n\n{error}\n\n")
-                        send_thread = threading.Thread(target=reply_to_usr, args=(msg.content, msg.reply_forward_usr_id, msg.type))
+                        send_thread = threading.Thread(target=reply_to_usr, args=(msg.content, msg.reply_forward_usr_id, msg.type, msg.caption))
                         send_thread.start()
                         print("thread started")
 

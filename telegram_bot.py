@@ -42,6 +42,13 @@ elif is_markdown.lower() == "false":
     is_markdown = False
 
 
+def send_typing(text, chat_id):
+    lenght = len(text)
+    loop = int(lenght * 0.2)
+    while loop > 0:
+        loop -= 1
+        bot.send_chat_action(chat_id, "typing")
+
 # admin "will" know who sent the message
 
 def notify_admin(is_group, from_chat_id, message_id, usr_first):
@@ -72,20 +79,60 @@ def notify_admin(is_group, from_chat_id, message_id, usr_first):
 # will probably add photos support
 # the bot will not forward message from admin, so your account will not be shown
 
-def message_pusher(message_content, chat_id, message_type):
+def message_pusher(message_content, reply_usr_id, message_type, caption):
+    global is_markdown
+    global is_send_typing
+
     if message_type == "text":
-        s = bot.send_message(chat_id, message_content, None, False)
+        if is_send_typing:
+            send_typing(message_content, reply_usr_id)
+        s = bot.send_message(reply_usr_id, message_content, is_markdown=is_markdown)
         if s:
-            print(f"{colour.green}admin replied to chat ID: {chat_id}{colour.reset}, content: {colour.yellow}{message_content}{colour.reset}\n")
+            print(f"admin replied to {reply_usr_id}, content: {colour.BOLD}{message_content}{colour.reset}\n")
         else:
-            print(f"admin replying to chat ID: {chat_id} {colour.RED}is not successful{colour.reset}, \ncontent: {colour.yellow}{message_content}{colour.reset}\n")
+            print(f"message: {colour.BOLD}{message_content}{colour.reset} for {reply_usr_id} {colour.RED}not sent{colour.reset}\n ")
     elif message_type == "sticker":
         sticker_id = message_content.replace("sticker: ", "")
-        s = bot.send_sticker(chat_id, sticker_id)
+        s = bot.send_sticker(reply_usr_id, sticker_id)
         if s:
-            print(f"{colour.green}admin replied to {chat_id}{colour.reset}, {colour.yellow}{message_content}{colour.reset}\n")
+            print(f"{colour.BOLD}sticker{colour.reset} sent\n")
         else:
-            print(f"admin replying to {chat_id} {colour.RED}is not successful{colour.reset}, \n{colour.yellow}{message_content}{colour.reset}\n")
+            print(f"{colour.BOLD}sticker{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+    elif message_type == "photo":
+        s = bot.send_photo(reply_usr_id, photo_id=message_content, text=caption, is_markdown=is_markdown)
+        if s:
+            print(f"{colour.BOLD}photo{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}photo{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+    elif message_type == "document":
+        s = bot.send_document(reply_usr_id, document_id=message_content, text=caption, is_markdown=is_markdown)
+        if s:
+            print(f"{colour.BOLD}document{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}document{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+    elif message_type == "animation":
+        s = bot.send_animation(reply_usr_id, animation_id=message_content, text=caption, is_markdown=is_markdown)
+        if s:
+            print(f"{colour.BOLD}animation{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}animation{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+    elif message_type == "audio":
+        s = bot.send_audio(reply_usr_id, audio_id=message_content, text=caption, is_markdown=is_markdown)
+        if s:
+            print(f"{colour.BOLD}audio{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}audio{colour.reset} {colour.RED}not sent{colour.reset}\n")
+
+    elif message_type == "video":
+        s = bot.send_video(reply_usr_id, video_id=message_content, text=caption, is_markdown=is_markdown)
+        if s:
+            print(f"{colour.BOLD}video{colour.reset} sent\n")
+        else:
+            print(f"{colour.BOLD}video{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
 
 def master():
@@ -124,12 +171,12 @@ def master():
                     bash_output = f"admin replied to {msg.reply_forward_usr_first}, content: {msg.content}\n"
                     # print(bash_output)
                     try:
-                        reply_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_forward_usr_id, msg.type))
+                        reply_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_forward_usr_id, msg.type, msg.caption))
                         reply_thread.start()
 
                     except RuntimeError as error:
                         print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
-                        reply_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_forward_usr_id, msg.type))
+                        reply_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_forward_usr_id, msg.type, msg.caption))
                         reply_thread.start()
                         print("thread started")
 
@@ -140,12 +187,12 @@ def master():
                     bash_output = f"admin sent a message to chat ID: {msg.reply_message_text}, content: {msg.content}\n "
                     # print(bash_output)
                     try:
-                        send_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_message_text, msg.type))
+                        send_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_message_text, msg.type, msg.caption))
                         send_thread.start()
 
                     except RuntimeError as error:
                         print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
-                        send_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_message_text, msg.type))
+                        send_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_message_text, msg.type, msg.caption))
                         send_thread.start()
                         print("thread started")
 

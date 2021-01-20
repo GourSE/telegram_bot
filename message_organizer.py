@@ -1,6 +1,5 @@
 # coding=utf-8
 
-import core
 import json
 
 class message():
@@ -25,6 +24,7 @@ class message():
         self.reply_forward_usr_id =             None
         self.reply_forward_usr_first =          None
         self.reply_is_forward =                 None
+        self.caption =                          None
 
         #check if fed is None type
         if get_updates_result is None:
@@ -43,9 +43,10 @@ class message():
 
             except:
                 #in case
-                fed_message = get_updates_result["result"]["message"]
 
-                #update ID
+                get_updates_result = get_updates_result["result"]
+
+                fed_message = get_updates_result["message"]
                 self.update_id = get_updates_result["update_id"]
         except:
             print("ERROR: can't get result")
@@ -133,8 +134,61 @@ class message():
             self.is_reply = False
             self.reply_is_forward = False
             self.reply_message_text = None
-            
+        
+        # for documents
 
-    #push expermental lol
-    def message_pusher(self):
-        print("push!")
+
+        # photo id will be the largest one(the third one)
+
+        try:
+            self.content = fed_message["photo"][2]["file_id"]
+            self.type = "photo"
+            try:
+                self.caption = fed_message["caption"]
+            except:
+                pass
+        except:
+            pass
+
+
+        try:
+            self.content = fed_message["document"]["file_id"]
+            self.type = "document"
+            try:
+                self.caption = fed_message["caption"]
+            except:
+                pass
+        except:
+            pass
+
+
+        try:
+            self.content = fed_message["animation"]["file_id"]
+            self.type = "animation"
+            try:
+                self.caption = fed_message["caption"]
+            except:
+                pass
+        except:
+            pass
+
+
+        try:
+            self.content = fed_message["audio"]["file_id"]
+            self.type = "audio"
+            try:
+                self.caption = fed_message["caption"]
+            except:
+                pass
+        except:
+            pass
+
+        try:
+            self.content = fed_message["video"]["file_id"]
+            self.type = "video"
+            try:
+                self.caption = fed_message["caption"]
+            except:
+                pass
+        except:
+            pass
