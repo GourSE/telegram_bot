@@ -141,7 +141,14 @@ class message():
         # photo id will be the largest one(the third one)
 
         try:
-            self.content = fed_message["photo"][2]["file_id"]
+            try:
+                self.content = fed_message["photo"][2]["file_id"]
+            except:
+                try:
+                    self.content = fed_message["photo"][1]["file_id"]
+                except:
+                    self.content = fed_message["photo"][0]["file_id"]
+
             self.type = "photo"
             try:
                 self.caption = fed_message["caption"]
@@ -192,3 +199,106 @@ class message():
                 pass
         except:
             pass
+
+class chat():
+    def __init__(self, chat_info):
+        self.chat_id =                      None
+        self.chat_title =                   None
+        self.chat_type =                    None
+        self.chat_bio =                     None
+        self.can_send_messages =            False
+        self.can_send_media_messages =      False
+        self.can_send_polls =               False
+        self.can_send_other_messages =      False
+        self.can_add_web_page_previews =    False
+        self.can_change_info =              False
+        self.can_invite_users =             False
+        self.can_pin_messages =             False
+        self.chat_photo_id =                None
+        self.ok =                           True
+
+        if chat_info is None:
+            print('chat_organizr: no such chat')
+            exit()
+        else:
+            #chat_info = json.loads(str(chat_info))
+            pass
+        try:
+            try:
+                #intended
+                self.chat_id = chat_info["id"]
+
+                self.chat_type = chat_info["type"]
+
+                if self.chat_type != "private":
+                    self.chat_bio = chat_info["description"]
+                    self.chat_title = chat_info["title"]
+
+                else:
+                    self.chat_bio = chat_info["bio"]
+                    self.chat_title = chat_info["first_name"]
+
+                if self.chat_type != "private":
+                    chat_permissions = chat_info["permissions"]
+                else:
+                    pass
+
+                try:
+                    self.chat_photo_id = chat_info["photo"]["big_file_id"]
+                except:
+                    self.chat_photo_id = None
+
+            except:
+                #in case
+                self.chat_id = chat_info["result"]["id"]
+
+                self.chat_type = chat_info["result"]["type"]
+
+                if self.chat_type != "private":
+                    self.chat_bio = chat_info["result"]["description"]
+                    self.chat_title = chat_info["result"]["title"]
+
+                else:
+                    self.chat_bio = chat_info["result"]["bio"]
+                    self.chat_title = chat_info["result"]["first_name"]
+
+                if self.chat_type != "private":
+                    chat_permissions = chat_info["result"]["permissions"]
+                else:
+                    pass
+
+                try:
+                    self.chat_photo_id = chat_info["result"]["photo"]["big_file_id"] 
+                except:
+                    self.chat_photo_id = None
+
+
+        except:
+            print("ERROR: can't get chat result")
+            self.ok = False
+            return
+
+        if self.chat_type != "private":
+            if chat_permissions["can_send_messages"] == "true":
+                self.can_send_messages = True
+
+            if chat_permissions["can_send_media_messages"] == "true":
+                self.can_send_media_messages = True
+
+            if chat_permissions["can_send_polls"] == "true":
+                self.can_send_polls = True
+
+            if chat_permissions["can_send_other_messages"] == "true":
+                self.can_send_other_messages = True
+
+            if chat_permissions["can_add_web_page_previews"] == "true":
+                self.can_add_web_page_previews = True
+
+            if chat_permissions["can_change_info"] == "true":
+                self.can_change_info = True
+
+            if chat_permissions["can_invite_users"] == "true":
+                self.can_invite_users = True
+
+            if chat_permissions["can_pin_messages"] == "true":
+                self.can_pin_messages = True

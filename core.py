@@ -372,8 +372,16 @@ Enter bot token: ")
             print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
             return False
 
+
     def send_sticker(self, chat_id, sticker_id, reply_to_message_id=None):
-        url = f"{self.base}sendSticker?chat_id={chat_id}&sticker={sticker_id}"
+        reply = ""
+        
+        if reply_to_message_id is not None:
+            reply = f"&reply_to_message_id={reply_to_message_id}"
+        else:
+            pass
+
+        url = f"{self.base}sendSticker?chat_id={chat_id}&sticker={sticker_id}{reply}"
         if sticker_id is not None:
             try:
                 r = requests.get(url)
