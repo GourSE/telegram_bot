@@ -1,4 +1,4 @@
-#-*- Makefle -*-
+#-*- Makefile -*-
 
 all: telegram_bot
 
