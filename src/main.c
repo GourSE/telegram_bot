@@ -36,7 +36,7 @@ int main()
     while(1)
     {
         char mode[30];
-        printf("select script to run\n\n1. telegram bot:\n\tfully featured telegram bot\n\tinteract with bot in Telegram\n\tsend dms and group messages\n\tsend text and stickers\n\treply to users\n\tsend media\n\n2. message pusher:\n\tinteract with bot in terminal/cmd\n\tsend dms and group messages\n\tsend text and stickers\n\n3.support bot:\n\tinteract with bot in Telegram\n\tsend text and stickers\n\treply to users\n\tsend media\n\ncheck README for more info\n\ntelegram_bot > $ ");
+        printf("select script to run\n\n1. telegram bot:\n\tfully featured telegram bot\n\tinteract with bot in Telegram\n\tsend dms and group messages\n\tsend text and stickers\n\treply to users\n\tsend media\n\n2. message pusher:\n\tinteract with bot in terminal/cmd\n\tsend dms and group messages\n\tsend text and stickers\n\n3. support bot:\n\tinteract with bot in Telegram\n\tsend text and stickers\n\treply to users\n\tsend media\n\ncheck README for more info\n\ntelegram_bot > $ ");
         scanf("%s", mode);
         switch (mode[0])
         {
