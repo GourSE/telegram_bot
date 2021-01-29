@@ -1,17 +1,22 @@
 # coding=utf-8
 
 from colours import colour
+from getpass import getuser
 from core import telegram_bot_api
 import configparser as cfg
 import time
 import random
 
-bot = telegram_bot_api("config.cfg")
 
 # Get config file for settings
-
 config = cfg.ConfigParser()
-config.read("config.cfg")
+try:
+    bot = telegram_bot_api(f"/home/{getuser()}/.local/share/telegram_bot/config.cfg")
+    config.read(f"/home/{getuser()}/.local/share/telegram_bot/config.cfg")
+except:
+    bot = telegram_bot_api("config.cfg")
+    config.read("config.cfg")
+
 is_send_typing = config.get("settings", "send_typing")
 is_markdown = config.get("settings", "use_markdown")
 

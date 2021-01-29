@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from colours import colour
+from getpass import getuser
 from organizer import message as morg
 import configparser as cfg
 from core import telegram_bot_api
@@ -8,10 +9,15 @@ import threading
 import time
 
 
-bot = telegram_bot_api("config.cfg")
-
 config = cfg.ConfigParser()
-config.read("config.cfg")
+
+try:
+    config.read(f"/home/{getuser()}/.local/share/telegram_bot/config.cfg")
+    bot = telegram_bot_api(f"/home/{getuser()}/.local/share/telegram_bot/config.cfg")
+except:
+    bot = telegram_bot_api("config.cfg")
+    config.read("config.cfg")
+
 admin_id = config.get("settings", "admin_id")
 
 if admin_id == "admin chat ID here":

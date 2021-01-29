@@ -10,9 +10,9 @@
 
 - put admin chat ID or user ID in 'config.cfg' under [settings] > [admin_id]
 
-- install modules in 'requirements.txt'
+- make
 
-- run 'telegram_bot.py'
+- launch with telegram_bot and select
 
 ### ***How to use***
 
@@ -44,9 +44,9 @@
 
 - put your bot token in 'config.cfg' under [bot] > [token]
 
-- install modules in 'requirements.txt'
+- make
 
-- run 'message_pusher.py'
+- launch with telegram_bot and select
 
 ### ***Tips***
 
@@ -72,9 +72,9 @@ you can also choose to use markdown from 'config.cfg' under [settings] > [use_ma
 
 - put admin chat ID or user ID in 'config.cfg' under [settings] > [admin_id]
 
-- install modules in 'requirements.txt'
+- make
 
-- run 'support_bot.py'
+- launch with telegram_bot and select
 
 ### ***How to use***
 
