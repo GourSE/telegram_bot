@@ -2,10 +2,20 @@
 
 ifeq ($(OS),Windows_NT) 
 	detected_OS := Windows
-	CC = CL
+	CC ?= gcc
 else
 	detected_OS := $(shell sh -c 'uname 2>/dev/null || echo Unknown')
+
+ifeq (, $(shell which gcc))
+	CC = clang
+else ifeq (, $(shell which clang))
 	CC = gcc
+else ifeq (, $(shell which cc))
+
+all: error
+
+endif
+
 endif
 
 all: telegram_bot
@@ -17,7 +27,12 @@ telegram_bot: src/main.c
 	$(CC) src/main.c -o ~/.local/bin/telegram_bot
 	mkdir -p ~/.local/share/telegram_bot
 	cp -r -u ./*.py ./config.cfg ~/.local/share/telegram_bot
+
+ifeq (, $(shell which pip3))
+	pip install -r requirements.txt -U
+else
 	pip3 install -r requirements.txt -U
+endif
 
 	@echo "\ndone"
 	@echo "Remember to update config.cfg if modified, by running 'make'"
@@ -91,3 +106,7 @@ clean:
 	@echo "\ndone"
 
 endif
+
+error:
+	@echo "No compiler installed"
+	$(error "No compiler installed")
