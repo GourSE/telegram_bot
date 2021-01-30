@@ -6,16 +6,36 @@ from core import telegram_bot_api
 import configparser as cfg
 import time
 import random
+import platform
+import os
 
+detected_OS = platform.system()
+
+prgm_path = ""
+if detected_OS == "Windows":
+    if os.environ.get("PROGRAMFILES(X86)") is None:
+        prgm_path = os.environ.get("PROGRAMFILES")
+    else:
+        prgm_path = os.environ.get("PROGRAMFILES(X86)")
+
+config_path = ["config.cfg", f"/home/{getuser()}/.local/share/telegram_bot/config.cfg", f"{prgm_path}\\GourSE\\telegram_bot\\"]
 
 # Get config file for settings
 config = cfg.ConfigParser()
-try:
-    bot = telegram_bot_api(f"/home/{getuser()}/.local/share/telegram_bot/config.cfg")
-    config.read(f"/home/{getuser()}/.local/share/telegram_bot/config.cfg")
-except:
-    bot = telegram_bot_api("config.cfg")
-    config.read("config.cfg")
+if detected_OS == "Windows":
+    try:
+        bot = telegram_bot_api(config_path[0])
+        config.read(config_path[0])
+    except:
+        bot = telegram_bot_api(config_path[2])
+        config.read(config_path[2])
+else:
+    try:
+        bot = telegram_bot_api(config_path[0])
+        config.read(config_path[0])
+    except:
+        bot = telegram_bot_api(config_path[1])
+        config.read(config_path[1])
 
 is_send_typing = config.get("settings", "send_typing")
 is_markdown = config.get("settings", "use_markdown")

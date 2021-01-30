@@ -7,16 +7,36 @@ import configparser as cfg
 from core import telegram_bot_api
 import threading
 import time
+import platform
+import os
 
+detected_OS = platform.system()
 
+prgm_path = ""
+if detected_OS == "Windows":
+    if os.environ.get("PROGRAMFILES(X86)") is None:
+        prgm_path = os.environ.get("PROGRAMFILES")
+    else:
+        prgm_path = os.environ.get("PROGRAMFILES(X86)")
+
+config_path = ["config.cfg", f"/home/{getuser()}/.local/share/telegram_bot/config.cfg", f"{prgm_path}\\GourSE\\telegram_bot\\"]
+
+# Get config file for settings
 config = cfg.ConfigParser()
-
-try:
-    config.read(f"/home/{getuser()}/.local/share/telegram_bot/config.cfg")
-    bot = telegram_bot_api(f"/home/{getuser()}/.local/share/telegram_bot/config.cfg")
-except:
-    bot = telegram_bot_api("config.cfg")
-    config.read("config.cfg")
+if detected_OS == "Windows":
+    try:
+        bot = telegram_bot_api(config_path[0])
+        config.read(config_path[0])
+    except:
+        bot = telegram_bot_api(config_path[2])
+        config.read(config_path[2])
+else:
+    try:
+        bot = telegram_bot_api(config_path[0])
+        config.read(config_path[0])
+    except:
+        bot = telegram_bot_api(config_path[1])
+        config.read(config_path[1])
 
 admin_id = config.get("settings", "admin_id")
 
