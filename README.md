@@ -115,7 +115,7 @@ your message will be sent to the user directly
 
     `pip3 install -r requirements.txt -U`
 
-    ***If you're on CentOS, RHEL and Arch Linux, install with this command instead***
+    ***If you're on CentOS, RHEL or Arch Linux, install with this command instead***
 
     `pip install -r requirements.txt -U`
 
@@ -139,7 +139,7 @@ your message will be sent to the user directly
 
     `python <script>`
 
-    ***Take telegram_bot.py for example***
+    ***Take telegram_bot.py as example***
 
     `python3 telegram_bot.py`
 
@@ -182,7 +182,7 @@ your message will be sent to the user directly
 
 - Build the project with `make`
 
-  ***If you have GNU Make GCC installed in your windows PC, use the command below***
+  ***If you have GNU Make and GCC installed in your windows PC, use the command below***
 
   `make`
 
@@ -194,6 +194,6 @@ your message will be sent to the user directly
 
 - Launch the program
 
-  > You will have to build the program with `make` to use this method
+  > You will have to build the program with `make` for method
 
   ***Launch the program with the desktop shortcut and select the script to run***
