@@ -194,6 +194,6 @@ your message will be sent to the user directly
 
 - Launch the program
 
-  > You will have to build the program with `make` for method
+  > You will have to build the program with `make` for this method
 
   ***Launch the program with the desktop shortcut and select the script to run***
