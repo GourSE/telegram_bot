@@ -15,6 +15,7 @@
 - to send a message to a chat, you first have to know the chat ID of the user or the group chat ID  
   
   then you'll have to reply to a message with the chat ID like this  
+  
   ![](./images/01.png)  
     
     by that you can send text message or sticker to a group chat or user
