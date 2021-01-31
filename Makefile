@@ -78,9 +78,9 @@ telegram_bot: src\main.c
 	del %SCRIPT%
 
 	@echo "\ndone."
-	@echo "Remember to update config.cfg if modified, by running 'make.exe'"
-	@echo "To compile into this directory, run 'make.exe current_dir'"
-	@echo "To remove program, run 'make.exe clean'\n"
+	@echo "Remember to update config.cfg if modified, by running 'make'"
+	@echo "To compile into this directory, run 'make current_dir'"
+	@echo "To remove program, run 'make clean'\n"
 
 current_dir: src\main.c
 
