@@ -59,7 +59,7 @@ telegram_bot: src\main.c
 	if not exist %ProgramFiles(x86)%\GourSE mkdir %ProgramFiles(x86)%\GourSE
 	if not exist %ProgramFiles(x86)%\GourSE\telegram_bot mkdir %ProgramFiles(x86)%\GourSE\telegram_bot
 	
-	$(CC) /Fe"%ProgramFiles(x86)%\GourSE\telegram_bot\telegram_bot" src\main.c
+	$(CC) /Fe"%ProgramFiles(x86)%\GourSE\telegram_bot\telegram_bot.exe" src\main.c
 	
 	copy %CD%\*.py %ProgramFiles(x86)%\GourSE\telegram_bot\
 	copy %CD%\config.cfg %ProgramFiles(x86)%\GourSE\telegram_bot\
@@ -83,7 +83,8 @@ telegram_bot: src\main.c
 	@echo "To remove program, run 'make.exe clean'\n"
 
 current_dir: src\main.c
-	$(CC) /Fe"%CD%\telegram_bot" src\main.c
+
+	$(CC) /Fe"%CD%\telegram_bot.exe" src\main.c
 
 	set SCRIPT="%TEMP%\%RANDOM%-%RANDOM%-%RANDOM%-%RANDOM%.vbs"
 	echo Set oWS = WScript.CreateObject("WScript.Shell") >> %SCRIPT%
