@@ -4,6 +4,7 @@ from colours import colour
 import logging
 import requests
 import json
+import os
 import mimetypes
 import configparser as cfg
 
@@ -19,13 +20,17 @@ class telegram_bot_api():
         token = config.get("bot", "token")
 
         if token == "bot token here" or token == "":
-            token = input(f"\
+            while True:
+                token = input(f"\
 {colour.RED}You did not enter a bot token{colour.reset}\n\
 please put your bot token in {colour.yellow}config.cfg{colour.reset} under {colour.blue}[bot] > [token]{colour.reset}\n\
 The bot token you enter now will not be saved\n\
-Enter bot token: ")
-            return token
-
+Enter bot token > $ ")
+                if token == ":q":
+                    print(f"{colour.GREEN}quit{colour.reset}\n")
+                    os._exit(1)
+                else:
+                    break
         return token
 
     def check_ok(self, fed_json):

@@ -31,8 +31,42 @@ const char SUPPORT_BOT[] = "python3 ~/.local/share/telegram_bot/support_bot.py";
 #endif
 
 
-int main()
+int main(int argc, char **argv)
 {
+    int r;
+    char flg;
+
+    for (r = 0; r < argc; r++)
+        if (r == 1)
+        {
+            flg = argv[1][1];
+        }
+        else
+        {
+            flg = '0';
+        }
+
+    switch (flg)
+    {
+        case 'p':
+            printf("message pusher\n\n");
+            system(MESSAGE_PUSHER);
+            return 0;
+
+        case 's':
+            printf("support bot\n\n");
+            system(SUPPORT_BOT);
+            return 0;
+
+        case 'f':
+            printf("telegram bot\n\n");
+            system(TELEGRAM_BOT);
+            return 0;
+
+        default:
+            break;
+    }
+
     while(1)
     {
         char mode[30];
@@ -40,57 +74,57 @@ int main()
         scanf("%s", mode);
         switch (mode[0])
         {
-        case '1':
-            #ifdef _WIN32
-            system("cls");
-            #else
-            system("clear");
-            #endif
+            case '1':
+                #ifdef _WIN32
+                system("cls");
+                #else
+                system("clear");
+                #endif
 
-            printf("telegram bot selected\n\n");
-            system(TELEGRAM_BOT);
-            return 0;
-            break;
-        
-        case '2':
-            #ifdef _WIN32
-            system("cls");
-            #else
-            system("clear");
-            #endif
+                printf("telegram bot selected\n\n");
+                system(TELEGRAM_BOT);
+                return 0;
+                break;
+            
+            case '2':
+                #ifdef _WIN32
+                system("cls");
+                #else
+                system("clear");
+                #endif
 
-            printf("message pusher selected\n\n");
-            system(MESSAGE_PUSHER);
-            return 0;
-            break;
+                printf("message pusher selected\n\n");
+                system(MESSAGE_PUSHER);
+                return 0;
+                break;
 
-        case '3':
-            #ifdef _WIN32
-            system("cls");
-            #else
-            system("clear");
-            #endif
+            case '3':
+                #ifdef _WIN32
+                system("cls");
+                #else
+                system("clear");
+                #endif
 
-            printf("support bot selected\n\n");
-            system(SUPPORT_BOT);
-            return 0;
-            break;
+                printf("support bot selected\n\n");
+                system(SUPPORT_BOT);
+                return 0;
+                break;
 
-        case 'q':
-            return 0;
+            case 'q':
+                return 0;
 
-        default:
-            printf("\n\n%s is not a mode\n", mode);
-            sleep(1);
+            default:
+                printf("\n\n%s is not a mode\n", mode);
+                sleep(1);
 
-            #ifdef _WIN32
-            system("cls");
-            #else
-            system("clear");
-            #endif
+                #ifdef _WIN32
+                system("cls");
+                #else
+                system("clear");
+                #endif
 
-            printf("%s is not a mode\n", mode);
-            break;
+                printf("%s is not a mode\n", mode);
+                break;
         }
     }
 }

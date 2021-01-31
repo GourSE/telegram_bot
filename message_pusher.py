@@ -66,21 +66,24 @@ elif is_markdown.lower() == "false":
 
 #     return fed
 
-def message_type_prompt():
-    fed = input("\nMessage types:\ntext(t)\nsticker(s)\nEnter message type: ")
+def message_type_prompt(last_chat_id=None):
+    fed = input("\nMessage types:\ntext(t)\nsticker(s)\nEnter message type > $ ")
     fed = fed.lower()
-    if fed == "text" or fed == "t":
+    if fed == "text" or fed == "t" or fed == "1":
         return "text"
-    elif fed == "sticker" or fed == "s":
+    elif fed == "sticker" or fed == "s" or fed == "2":
         return "sticker"
+    elif fed == ":q":
+        print(f"{colour.GREEN}abord{colour.reset}\n")
+        master(last_chat_id)
     else:
         print("\n{}{} is not a message type{}\n".format(colour.RED, fed, colour.reset))
         time.sleep(0.5)
-        return message_type_prompt()
+        return message_type_prompt(last_chat_id)
 
 def sticker_prompt(chat_id):
     success = None
-    fed = input("Enter sticker ID: ")
+    fed = input("Enter sticker ID > $ ")
     if fed == ":q":
         print("abord\n")
         time.sleep(0.5)
@@ -123,10 +126,9 @@ def text_prompt(chat_id, is_markdown):
     #         print("Plese enter 'y' for yes and 'n' for no")
     #         text_prompt(chat_id, is_markdown)
 
-    fed = input("Enter text message: ")
+    fed = input("Enter text message > $ ")
     if fed == ":q":
-        print("abord\n")
-        time.sleep(0.5)
+        print(f"{colour.GREEN}abord{colour.reset}\n")
         master(chat_id)
     else:
         try:
@@ -154,19 +156,36 @@ def text_prompt(chat_id, is_markdown):
             text_prompt(chat_id, None)
 
 
-def master(last_chat_id):
+def master(last_chat_id=None):
     if last_chat_id is not None:
-        fed = input("Do you want to use your last chat ID?\n(Y/n): ")
-        fed = fed[0].lower()
-        print(fed)
-        if fed == "y":
+        fed = input("Use previous chat ID?(Y/n) > $ ")
+        fedf = fed[0].lower()
+        # print(fed)
+        if fedf == "y":
             chat_id = last_chat_id
-        else:
+        elif fedf == "n":
             chat_id = input("Ener chat ID: ")
+        elif fed == ":q":
+            print(f"{colour.GREEN}quit{colour.reset}\n")
+            os._exit(1)
+        else:
+            print(f"{colour.RED}{fed} is not a valid answer{colour.reset}\nuse (Y/n)\n")
+            time.sleep(1)
+            master(last_chat_id)
+    
     else:
-        chat_id = input("Ener chat ID: ")
+        while True:
+            chat_id = input("Ener chat ID > $ ")
+            if chat_id == "":
+                print(f"{colour.RED}you entered nothing{colour.reset}\n")
+                time.sleep(1)
+            elif chat_id == ":q":
+                print(f"{colour.GREEN}quit{colour.reset}\n")
+                os._exit(1)
+            else:
+                break
 
-    message_type = message_type_prompt()
+    message_type = message_type_prompt(last_chat_id)
     print("You are going to send {} message(s) to chat id: {}".format(message_type, chat_id))
     if message_type == "sticker":
         sticker_prompt(chat_id)
@@ -176,4 +195,4 @@ def master(last_chat_id):
         print(f"{colour.RED}ERROR: MESSAGE_TYPE_INVALID{colour.reset}")
 
 
-master(None)
+master()

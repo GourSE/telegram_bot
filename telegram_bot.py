@@ -48,7 +48,12 @@ if admin_id == "admin chat ID here":
 \n{colour.RED}You did not enter an admin chat ID{colour.reset}\n\
 An admin chat ID can be both a group or a user chat ID\n\
 The chat ID you enter now will not be saved\n\
-Enter admin chat ID: ")
+Enter admin chat ID > $ ")
+    if admin_id == ":q":
+        print(f"{colour.GREEN}quit\n{colour.reset}")
+        os._exit(1)
+    else:
+        pass
 
 else:
     pass
