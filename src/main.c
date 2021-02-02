@@ -20,15 +20,101 @@ const char SUPPORT_BOT[] = "python support_bot.py";
 
 #elif __linux__
 
+#define _PROGRAM_NAME "Telegram Bot"
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+
+const char TELEGRAM_BOT_C[] = "python3 telegram_bot.py";
+const char MESSAGE_PUSHER_C[] = "python3 message_pusher.py";
+const char SUPPORT_BOT_C[] = "python3 support_bot.py";
 
 const char TELEGRAM_BOT[] = "python3 ~/.local/share/telegram_bot/telegram_bot.py";
 const char MESSAGE_PUSHER[] = "python3 ~/.local/share/telegram_bot/message_pusher.py";
 const char SUPPORT_BOT[] = "python3 ~/.local/share/telegram_bot/support_bot.py";
 
+
 #endif
+
+
+int launchScript(int mode)
+{
+    #ifdef __linux__
+    // FILE    *fp;
+
+    // fp = popen("file telegram_bot", "r");
+    // printf("%s" ,fp);
+
+    char *homeDir = getenv("HOME");
+
+    char file_[] = "/.local/share/telegram_bot/config.cfg";
+
+    char *fileLoc = malloc(strlen(homeDir) + strlen(file_) + 1);
+    strcpy(fileLoc, homeDir);
+    strcat(fileLoc, file_);
+
+    // debug
+    // printf("%s\n", fileLoc);
+
+    struct stat buffer;
+    int file__ = stat(fileLoc, &buffer);
+
+    if (file__ == -1)
+    {
+        // debug
+        // printf("no\n");
+        
+        switch (mode)
+        {
+            case 1:
+                system(TELEGRAM_BOT_C);
+                return 0;
+            
+            case 2:
+                system(MESSAGE_PUSHER_C);
+                return 0;
+
+            case 3:
+                system(SUPPORT_BOT_C);
+                return 0;
+        }
+    }
+    else
+    {
+        switch (mode)
+        {
+            case 1:
+                system(TELEGRAM_BOT);
+                return 0;
+            
+            case 2:
+                system(MESSAGE_PUSHER);
+                return 0;
+
+            case 3:
+                system(SUPPORT_BOT);
+                return 0;
+        }
+    }
+    #else
+    switch (mode)
+    {
+        case 1:
+            system(TELEGRAM_BOT);
+            return 0;
+        
+        case 2:
+            system(MESSAGE_PUSHER);
+            return 0;
+
+        case 3:
+            system(SUPPORT_BOT);
+            return 0;
+    }
+    #endif
+}
 
 
 int main(int argc, char **argv)
@@ -48,19 +134,19 @@ int main(int argc, char **argv)
 
     switch (flg)
     {
+        case 'f':
+            printf("telegram bot\n\n");
+            launchScript(1);
+            return 0;
+            
         case 'p':
             printf("message pusher\n\n");
-            system(MESSAGE_PUSHER);
+            launchScript(2);
             return 0;
 
         case 's':
             printf("support bot\n\n");
-            system(SUPPORT_BOT);
-            return 0;
-
-        case 'f':
-            printf("telegram bot\n\n");
-            system(TELEGRAM_BOT);
+            launchScript(3);
             return 0;
 
         default:
@@ -82,7 +168,7 @@ int main(int argc, char **argv)
                 #endif
 
                 printf("telegram bot selected\n\n");
-                system(TELEGRAM_BOT);
+                launchScript(1);
                 return 0;
                 break;
             
@@ -94,7 +180,7 @@ int main(int argc, char **argv)
                 #endif
 
                 printf("message pusher selected\n\n");
-                system(MESSAGE_PUSHER);
+                launchScript(2);
                 return 0;
                 break;
 
@@ -106,7 +192,7 @@ int main(int argc, char **argv)
                 #endif
 
                 printf("support bot selected\n\n");
-                system(SUPPORT_BOT);
+                launchScript(3);
                 return 0;
                 break;
 
