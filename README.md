@@ -92,7 +92,7 @@
 
   ***If you want to compile the binary in the project directory, run this command instead***
 
-  `make current_dir`
+  `make current`
 
 - Launch the program
 
@@ -187,6 +187,10 @@
   `make`
 
   ***The program will be installed in your program files and a deskop shortcut will appear***
+
+  ***If you want to compile the binary in the project directory, run this command instead***
+
+  `make current`
 
   ***If you want to remove the program, use the command below***
 

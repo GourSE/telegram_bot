@@ -35,11 +35,29 @@ else
 endif
 
 	@echo "\ndone"
-	@echo "Remember to update config.cfg if modified, by running 'make'"
-	@echo "To compile into this directory, run 'make current_dir'"
-	@echo "To remove program, run 'make clean'\n"
+	@echo "Looking forward to compile into this directory, run 'make current'"
+	@echo "For removing the program, run 'make clean'\n\n"
+	@echo "To modify config.cfg, run 'telegram_bot -c' or 'telegram_bot --config'"
+	@echo "To make without replacing config, run 'make keep_old'\n\n"
 
-current_dir: src/main.c
+keep_old: src/main.c
+
+	$(CC) src/main.c -o ~/.local/bin/telegram_bot
+	mkdir -p ~/.local/share/telegram_bot
+	cp -r -u ./*.py ~/.local/share/telegram_bot
+
+ifeq (, $(shell which pip3))
+	pip install -r requirements.txt -U
+else
+	pip3 install -r requirements.txt -U
+endif
+
+	@echo "\ndone"
+	@echo "Looking forward to compile into this directory, run 'make current'"
+	@echo "For removing the program, run 'make clean'\n\n"
+	@echo "To modify config.cfg, run 'telegram_bot -c' or 'telegram_bot --config'\n\n"
+
+current: src/main.c
 	$(CC) src/main.c -o telegram_bot
 
 	@echo "\ndone"
@@ -79,10 +97,10 @@ telegram_bot: src\main.c
 
 	@echo "\ndone."
 	@echo "Remember to update config.cfg if modified, by running 'make'"
-	@echo "To compile into this directory, run 'make current_dir'"
+	@echo "To compile into this directory, run 'make current'"
 	@echo "To remove program, run 'make clean'\n"
 
-current_dir: src\main.c
+current: src\main.c
 
 	$(CC) /Fe"%CD%\telegram_bot.exe" src\main.c
 
