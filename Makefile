@@ -45,7 +45,7 @@ endif
 	@echo "\ndone"
 	@echo "Looking forward to compile into this directory, run \e[92mmake current\e[0m"
 	@echo "For removing the program, run \e[92mmake clean\e[0m\n\n"
-	@echo "To modify config.cfg, run 'telegram_bot -c' or \e[92mtelegram_bot --config\e[0m"
+	@echo "To modify config.cfg, run \e[92mtelegram_bot -c\e[0m or \e[92mtelegram_bot --config\e[0m"
 
 replace: src/main.c
 
@@ -62,7 +62,7 @@ endif
 	@echo "\ndone"
 	@echo "Looking forward to compile into this directory, run \e[92mmake current\e[0m"
 	@echo "For removing the program, run \e[92mmake clean\e[0m\n\n"
-	@echo "To modify config.cfg, run 'telegram_bot -c' or \e[92mtelegram_bot --config\e[0m\n\n"
+	@echo "To modify config.cfg, run \e[92mtelegram_bot -c\e[0m or \e[92mtelegram_bot --config\e[0m\n\n"
 
 current: src/main.c
 	$(CC) src/main.c -o telegram_bot
