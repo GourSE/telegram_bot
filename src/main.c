@@ -62,7 +62,6 @@ int main(int argc, char **argv)
         else if (r > 1)
         {
             printf("usage: telegram_bot <-f/-p/-s>\n\n");
-            // printf("usage: telegram_bot <single argument value>\n");
             return 1;
         }
     }

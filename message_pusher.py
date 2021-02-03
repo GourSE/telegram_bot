@@ -52,20 +52,6 @@ elif is_markdown.lower() == "false":
     is_markdown = False
 
 
-# def chat_id_prompt():
-#     fed = input("Ener chat ID: ")
-
-#     the chat ID could be user's ID
-
-#     if fed.__len__() < 9:
-#         print("Are you sure this is a chat id?\n")
-#         time.sleep(0.5)
-#         return chat_id_prompt()
-#     else:
-#         return fed
-
-#     return fed
-
 def message_type_prompt(last_chat_id=None):
     fed = input("\nMessage types:\ntext(t)\nsticker(s)\nEnter message type > $ ")
     fed = fed.lower()
@@ -110,21 +96,6 @@ def send_typing(text, chat_id):
 
 def text_prompt(chat_id, is_markdown):
     success = None
-    
-    # if is_markdown == None:
-    #     is_markdown = input("Do you want to use MarkdownV2 in this message?\n(Y/n): ")
-    #     is_markdown = is_markdown[0].lower()
-    #     if is_markdown == "y":
-    #         is_markdown = True
-    #     elif is_markdown == "n":
-    #         is_markdown = False
-    #     elif is_markdown == ":q":
-    #         print("abord\n")
-    #         time.sleep(0.5)
-    #         master(chat_id)
-    #     else:
-    #         print("Plese enter 'y' for yes and 'n' for no")
-    #         text_prompt(chat_id, is_markdown)
 
     fed = input("Enter text message > $ ")
     if fed == ":q":
