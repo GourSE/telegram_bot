@@ -60,7 +60,7 @@ def message_type_prompt(last_chat_id=None):
     elif fed == "sticker" or fed == "s" or fed == "2":
         return "sticker"
     elif fed == ":q":
-        print(f"{colour.GREEN}abord{colour.reset}\n")
+        print(f"{colour.GREEN}abort{colour.reset}\n")
         master(last_chat_id)
     else:
         print("\n{}{} is not a message type{}\n".format(colour.RED, fed, colour.reset))
@@ -71,7 +71,7 @@ def sticker_prompt(chat_id):
     success = None
     fed = input("Enter sticker ID > $ ")
     if fed == ":q":
-        print("abord\n")
+        print(f"{colour.GREEN}abort{colour.reset}\n")
         time.sleep(0.5)
         master(chat_id)
     else:
@@ -99,7 +99,7 @@ def text_prompt(chat_id, is_markdown):
 
     fed = input("Enter text message > $ ")
     if fed == ":q":
-        print(f"{colour.GREEN}abord{colour.reset}\n")
+        print(f"{colour.GREEN}abort{colour.reset}\n")
         master(chat_id)
     else:
         try:
