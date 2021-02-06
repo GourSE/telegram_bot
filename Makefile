@@ -26,6 +26,31 @@ telegram_bot: src/main.c
 
 	$(CC) src/main.c -o ~/.local/bin/telegram_bot
 	mkdir -p ~/.local/share/telegram_bot
+	cp -r -u ./*.py ~/.local/share/telegram_bot
+
+ifneq ("$(wildcard ~/.local/share/telegram_bot/config.cfg)", "")
+	@echo "\n\n\e[32mConfig file exits, will not replace\e[0m"
+	@echo "To replace old config, try \e[92mmake replace\e[0m\n\n"
+else
+	cp -r -u ./config.cfg ~/.local/share/telegram_bot
+endif
+
+
+ifeq (, $(shell which pip3))
+	pip install -r requirements.txt -U
+else
+	pip3 install -r requirements.txt -U
+endif
+
+	@echo "\ndone"
+	@echo "Looking forward to compile into this directory, run \e[92mmake current\e[0m"
+	@echo "For removing the program, run \e[92mmake clean\e[0m\n\n"
+	@echo "To modify config.cfg, run \e[92mtelegram_bot -c\e[0m or \e[92mtelegram_bot --config\e[0m"
+
+replace: src/main.c
+
+	$(CC) src/main.c -o ~/.local/bin/telegram_bot
+	mkdir -p ~/.local/share/telegram_bot
 	cp -r -u ./*.py ./config.cfg ~/.local/share/telegram_bot
 
 ifeq (, $(shell which pip3))
@@ -35,11 +60,11 @@ else
 endif
 
 	@echo "\ndone"
-	@echo "Remember to update config.cfg if modified, by running 'make'"
-	@echo "To compile into this directory, run 'make current_dir'"
-	@echo "To remove program, run 'make clean'\n"
+	@echo "Looking forward to compile into this directory, run \e[92mmake current\e[0m"
+	@echo "For removing the program, run \e[92mmake clean\e[0m\n\n"
+	@echo "To modify config.cfg, run \e[92mtelegram_bot -c\e[0m or \e[92mtelegram_bot --config\e[0m\n\n"
 
-current_dir: src/main.c
+current: src/main.c
 	$(CC) src/main.c -o telegram_bot
 
 	@echo "\ndone"
@@ -79,10 +104,10 @@ telegram_bot: src\main.c
 
 	@echo "\ndone."
 	@echo "Remember to update config.cfg if modified, by running 'make'"
-	@echo "To compile into this directory, run 'make current_dir'"
+	@echo "To compile into this directory, run 'make current'"
 	@echo "To remove program, run 'make clean'\n"
 
-current_dir: src\main.c
+current: src\main.c
 
 	$(CC) /Fe"%CD%\telegram_bot.exe" src\main.c
 

@@ -4,6 +4,7 @@ from colours import colour
 import logging
 import requests
 import json
+import os
 import mimetypes
 import configparser as cfg
 
@@ -19,18 +20,21 @@ class telegram_bot_api():
         token = config.get("bot", "token")
 
         if token == "bot token here" or token == "":
-            token = input(f"\
+            while True:
+                token = input(f"\
 {colour.RED}You did not enter a bot token{colour.reset}\n\
 please put your bot token in {colour.yellow}config.cfg{colour.reset} under {colour.blue}[bot] > [token]{colour.reset}\n\
 The bot token you enter now will not be saved\n\
-Enter bot token: ")
-            return token
-
+Enter bot token > $ ")
+                if token == ":q":
+                    print(f"{colour.GREEN}quit{colour.reset}\n")
+                    os._exit(1)
+                else:
+                    break
         return token
 
     def check_ok(self, fed_json):
         ok = fed_json["ok"]
-        # print(fed_json)
         if str(ok).lower() == "false":
             print(f"\nFrom {colour.BLUE}Telegram Bot API{colour.reset}:\n{colour.WARNING}{fed_json}{colour.reset}\n")
             return False
@@ -55,7 +59,6 @@ Enter bot token: ")
 
     def send_document(self, chat_id, document_location=None, document_id=None, text=None, is_markdown=False, reply_to_message_id=None):
         if document_location is not None:
-            # mimetype = mimetypes.guess_type(document_location)[0]
             files = {'document': open(document_location, "rb")}
         elif document_id is None and document_location is None:
             print(f"{colour.WARNING}no file passed in(document_location, document_id){colour.reset}")
@@ -87,10 +90,6 @@ Enter bot token: ")
         url = f"{self.base}sendDocument?chat_id={chat_id}{document}{caption}{reply_to_message}{markdown}"
 
         try:
-            # with open(document_location, "rb") as image_file:
-            #     files = {'field_name': image_file}
-            #     # cookie = {cookiename: token.value}
-            #     r = requests.post(url, files=files)
             if document_location is not None:
                 r = requests.post(url, files = files)
             else:
@@ -110,7 +109,6 @@ Enter bot token: ")
 
     def send_photo(self, chat_id, photo_location=None, photo_id=None, text=None, is_markdown=False, reply_to_message_id=None):
         if photo_location is not None:
-            # mimetype = mimetypes.guess_type(photo_location)[0]
             files = {'photo': open(photo_location, "rb")}
         elif photo_id is None and photo_location is None:
             print(f"{colour.WARNING}no file passed in(photo_location, photo_id){colour.reset}")
@@ -142,10 +140,6 @@ Enter bot token: ")
         url = f"{self.base}sendPhoto?chat_id={chat_id}{photo}{caption}{reply_to_message}{markdown}"
 
         try:
-            # with open(photo_location, "rb") as image_file:
-            #     files = {'field_name': image_file}
-            #     # cookie = {cookiename: token.value}
-            #     r = requests.post(url, files=files)
             if photo_location is not None:
                 r = requests.post(url, files = files)
             else:
@@ -165,7 +159,6 @@ Enter bot token: ")
 
     def send_audio(self, chat_id, audio_location=None, audio_id=None, text=None, is_markdown=False, reply_to_message_id=None):
         if audio_location is not None:
-            # mimetype = mimetypes.guess_type(audio_location)[0]
             files = {'audio': open(audio_location, "rb")}
         elif audio_id is None and audio_location is None:
             print(f"{colour.WARNING}no file passed in(audio_location, audio_id){colour.reset}")
@@ -197,10 +190,6 @@ Enter bot token: ")
         url = f"{self.base}sendAudio?chat_id={chat_id}{audio}{caption}{reply_to_message}{markdown}"
 
         try:
-            # with open(audio_location, "rb") as image_file:
-            #     files = {'field_name': image_file}
-            #     # cookie = {cookiename: token.value}
-            #     r = requests.post(url, files=files)
             if audio_location is not None:
                 r = requests.post(url, files = files)
             else:
@@ -220,7 +209,6 @@ Enter bot token: ")
 
     def send_video(self, chat_id, video_location=None, video_id=None, text=None, is_markdown=False, reply_to_message_id=None):
         if video_location is not None:
-            # mimetype = mimetypes.guess_type(video_location)[0]
             files = {'video': open(video_location, "rb")}
         elif video_id is None and video_location is None:
             print(f"{colour.WARNING}no file passed in(video_location, video_id){colour.reset}")
@@ -252,10 +240,6 @@ Enter bot token: ")
         url = f"{self.base}sendVideo?chat_id={chat_id}{video}{caption}{reply_to_message}{markdown}"
 
         try:
-            # with open(video_location, "rb") as image_file:
-            #     files = {'field_name': image_file}
-            #     # cookie = {cookiename: token.value}
-            #     r = requests.post(url, files=files)
             if video_location is not None:
                 r = requests.post(url, files = files)
             else:
@@ -275,7 +259,6 @@ Enter bot token: ")
 
     def send_animation(self, chat_id, animation_location=None, animation_id=None, text=None, is_markdown=False, reply_to_message_id=None):
         if animation_location is not None:
-            # mimetype = mimetypes.guess_type(animation_location)[0]
             files = {'animation': open(animation_location, "rb")}
         elif animation_id is None and animation_location is None:
             print(f"{colour.WARNING}no file passed in(animation_location, animation_id){colour.reset}")
@@ -307,10 +290,6 @@ Enter bot token: ")
         url = f"{self.base}sendAnimation?chat_id={chat_id}{animation}{caption}{reply_to_message}{markdown}"
 
         try:
-            # with open(animation_location, "rb") as image_file:
-            #     files = {'field_name': image_file}
-            #     # cookie = {cookiename: token.value}
-            #     r = requests.post(url, files=files)
             if animation_location is not None:
                 r = requests.post(url, files = files)
             else:

@@ -79,7 +79,7 @@
 
   `sudo apt install clang`
 
-  ***If you can't install them or not looking forward to, skip the next 2 steps***
+      ***If you can't install them or not looking forward to, skip the next 2 steps***
 
 
 - Build the program with `make`
@@ -92,18 +92,23 @@
 
   `make`
 
-  ***If you want to compile the binary in the project directory, run this command instead***
+  ***To compile the binary into the project directory, run this command instead***
 
-  `make current_dir`
+  `make current`
 
-- Launch the program
+  ***Command usage***
 
-  ***Launch the program with the command below***
+  `telegram_bot <-f/-p/-s/--config>`
 
-  `telegram_bot`
+    - ***-f*** - Telegram bot
+
+    - ***-p*** - Message pusher
+
+    - ***-s*** - Support bot 
+
+    - -***-c***onfig - Edit config
 
   ***and select the script to run***
-
 
 - Launch with python
 
@@ -189,6 +194,10 @@
   `make`
 
   ***The program will be installed in your program files and a deskop shortcut will appear***
+
+  ***If you want to compile the binary in the project directory, run this command instead***
+
+  `make current`
 
   ***If you want to remove the program, use the command below***
 
