@@ -1,4 +1,6 @@
-﻿# Telegram bot
+﻿![Logo](images/LOGO.png)
+
+# Telegram bot
 
 > script to push message with your bot, and reply message for your bot, by interacting with the bot
 
