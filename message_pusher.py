@@ -8,6 +8,7 @@ import time
 import random
 import platform
 import os
+import textf
 
 detected_OS = platform.system()
 
@@ -94,37 +95,40 @@ def send_typing(text, chat_id):
         loop -= 1
         bot.send_chat_action(chat_id, "typing")
 
-def text_prompt(chat_id, is_markdown):
+def text_prompt(chat_id):
     success = None
+    global is_markdown
+    global is_send_typing
 
     fed = input("Enter text message > $ ")
     if fed == ":q":
         print(f"{colour.GREEN}abort{colour.reset}\n")
         master(chat_id)
     else:
+        fedf = textf.hex(fed)
         try:
 
             if is_send_typing:
                 send_typing(fed, chat_id)
-                success = bot.send_message(chat_id, fed, None, is_markdown)
+                success = bot.send_message(chat_id, fedf, is_markdown=is_markdown)
                 if success:
                     print(f"message: \"{fed}\" sent")
                 else:
                     print(f"message: \"{fed}\" not send\n")
-                text_prompt(chat_id, is_markdown)
+                text_prompt(chat_id)
             else:
-                success = bot.send_message(chat_id, fed, None, is_markdown)
+                success = bot.send_message(chat_id, fedf, None, is_markdown)
                 if success:
                     print(f"message: \"{fed}\" sent")
                 else:
                     print(f"message: \"{fed}\" not send\n")
-                text_prompt(chat_id, is_markdown)
+                text_prompt(chat_id)
 
 
         except Exception as ERROR:
             print(f"\nSomething went wrong, more info:\n{ERROR}\n\n")
             time.sleep(0.5)
-            text_prompt(chat_id, None)
+            text_prompt(chat_id)
 
 
 def master(last_chat_id=None):
@@ -161,7 +165,7 @@ def master(last_chat_id=None):
     if message_type == "sticker":
         sticker_prompt(chat_id)
     elif message_type == "text":
-        text_prompt(chat_id, None)
+        text_prompt(chat_id)
     else:
         print(f"{colour.RED}ERROR: MESSAGE_TYPE_INVALID{colour.reset}")
 

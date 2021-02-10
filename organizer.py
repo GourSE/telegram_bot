@@ -13,6 +13,8 @@ class message():
         self.chat_title =                       None
         self.chat_id =                          None
         self.usr_first =                        None
+        self.usr_last =                         None
+        self.usr_name =                         None
         self.message_id =                       None
         self.usr_id =                           None
         self.is_reply =                         None
@@ -21,10 +23,18 @@ class message():
         self.reply_message_is_text =            None
         self.reply_usr_id =                     None
         self.reply_usr_first =                  None
+        self.reply_usr_last =                   None
+        self.reply_usr_name =                   None
         self.reply_forward_usr_id =             None
         self.reply_forward_usr_first =          None
         self.reply_is_forward =                 None
         self.caption =                          None
+
+        user_first =                            ""
+        user_last =                             ""
+        reply_user_first =                      ""
+        reply_user_last =                       ""
+
 
         #check if fed is None type
         if get_updates_result is None:
@@ -95,7 +105,15 @@ class message():
         #no last name, I don't want to check if there's a lastname or not
         #same as user ID, the t.me/ID one
         #probably will be included in the future
-        self.usr_first = fed_message["from"]["first_name"]
+        user_first = fed_message["from"]["first_name"]
+        try: 
+            user_last = fed_message['from']['last_name']
+            self.usr_last = user_last
+        except:
+            pass
+
+        self.usr_first = user_first
+        self.usr_name = f"{user_first} {user_last}"
 
         #message ID
         self.message_id = fed_message["message_id"]
@@ -113,8 +131,19 @@ class message():
             except:
                 self.reply_message_text = None
                 self.reply_message_is_text = False
+
+
             self.reply_usr_id = fed_message["reply_to_message"]["from"]["id"]
-            self.reply_usr_first = fed_message["reply_to_message"]["from"]["first_name"]
+            reply_user_first = fed_message["reply_to_message"]["from"]["first_name"]
+            try:
+                reply_user_last = fed_message['reply_to_message']['from']['last_name']
+                self.reply_usr_last = reply_user_last
+            except:
+                pass
+            self.reply_usr_first = reply_user_first
+            self.reply_usr_name = f"{reply_user_first} {reply_user_last}"
+
+            
             try:
                 #check if message is forwared
                 self.reply_forward_usr_id = fed_message["reply_to_message"]["forward_from"]["id"]
@@ -217,6 +246,9 @@ class chat():
         self.chat_photo_id =                None
         self.ok =                           True
 
+        user_first =                        ""
+        user_last =                         ""
+
         if chat_info is None:
             print('chat_organizr: no such chat')
             exit()
@@ -260,7 +292,12 @@ class chat():
 
                 else:
                     self.chat_bio = chat_info["result"]["bio"]
-                    self.chat_title = chat_info["result"]["first_name"]
+                    user_first = chat_info["result"]["first_name"]
+                    try:
+                        user_last = chat_info['result']['last_name']
+                    except:
+                        pass
+                    self.chat_title = f"{user_first} {user_last}"
 
                 if self.chat_type != "private":
                     chat_permissions = chat_info["result"]["permissions"]

@@ -9,6 +9,7 @@ import threading
 import time
 import platform
 import os
+import textf
 
 detected_OS = platform.system()
 
@@ -89,13 +90,6 @@ def notify_admin(is_group, from_chat_id, message_id, usr_first):
     else:
         pass
 
-    s = bot.send_message(admin_id, f"[{usr_first}](tg://user?id={from_chat_id})", None, True)
-    
-    if s:
-        pass
-    else:
-        print(f"{colour.RED}cannot send user info to admin{colour.reset}\n{colour.red}user first name: {usr_first}, user ID: {from_chat_id}{colour.reset}\n\n")
-    
     s = bot.forward_message(admin_id, from_chat_id, message_id)
 
     if s:
@@ -103,6 +97,13 @@ def notify_admin(is_group, from_chat_id, message_id, usr_first):
     else:
         print(f"{colour.RED} unable to forward message to admin{colour.reset}\n{colour.red}user first name: {usr_first}, user ID: {from_chat_id}{colour.reset}\n\n")
 
+    s = bot.send_message(admin_id, f"[{usr_first}](tg://user?id={from_chat_id})", None, True)
+    
+    if s:
+        pass
+    else:
+        print(f"{colour.RED}cannot send user info to admin{colour.reset}\n{colour.red}user first name: {usr_first}, user ID: {from_chat_id}{colour.reset}\n\n")
+    
     return
 
 # reply to user with reguler messages and stickers
@@ -113,9 +114,12 @@ def message_pusher(message_content, reply_usr_id, message_type, caption):
     global is_markdown
     global is_send_typing
 
+    caption = textf.hex(caption)
+
     if message_type == "text":
         if is_send_typing:
             send_typing(message_content, reply_usr_id)
+        message_content = textf.hex(message_content)
         s = bot.send_message(reply_usr_id, message_content, is_markdown=is_markdown)
         if s:
             print(f"admin replied to {reply_usr_id}, content: {colour.BOLD}{message_content}{colour.reset}\n")

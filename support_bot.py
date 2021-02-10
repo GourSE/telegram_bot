@@ -9,6 +9,7 @@ import threading
 import time
 import platform
 import os
+import textf
 
 detected_OS = platform.system()
 
@@ -73,8 +74,9 @@ def notify_admin(is_group, from_chat_id, message_id):
     return
 
 def reply_to_usr(message_content, reply_usr_id, message_type, caption):
+    caption = textf.hex(caption)
     if message_type == "text":
-        s = bot.send_message(reply_usr_id, message_content, None, False)
+        s = bot.send_message(reply_usr_id, textf.hex(message_content), None, False)
         if s:
             print(f"admin replied to {reply_usr_id}, content: {colour.BOLD}{message_content}{colour.reset}\n")
         else:
