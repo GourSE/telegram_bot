@@ -97,7 +97,7 @@ def notify_admin(is_group, from_chat_id, message_id, usr_first):
     else:
         print(f"{colour.RED} unable to forward message to admin{colour.reset}\n{colour.red}user first name: {usr_first}, user ID: {from_chat_id}{colour.reset}\n\n")
 
-    s = bot.send_message(admin_id, f"[{usr_first}](tg://user?id={from_chat_id})", None, True)
+    s = bot.send_message(admin_id, f"[{textf.hex(usr_first)}](tg://user?id={from_chat_id})", None, True)
     
     if s:
         pass
@@ -119,7 +119,9 @@ def message_pusher(message_content, reply_usr_id, message_type, caption):
     if message_type == "text":
         if is_send_typing:
             send_typing(message_content, reply_usr_id)
+
         message_content = textf.hex(message_content)
+
         s = bot.send_message(reply_usr_id, message_content, is_markdown=is_markdown)
         if s:
             print(f"admin replied to {reply_usr_id}, content: {colour.BOLD}{message_content}{colour.reset}\n")

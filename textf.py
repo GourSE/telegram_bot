@@ -1,4 +1,4 @@
-# escape for md
+# coding=utf-8
 
 def escape(fed):
     result = fed.replace("\\", "\\\\")
@@ -16,14 +16,14 @@ def escape(fed):
     result = result.replace("!", "\\!")
     result = result.replace("~", "\\~")
     result = result.replace(">", "\\>")
-    result = result.replace("|", "\\|")
     result = result.replace("=", "\\=")
+    result = result.replace("|", "\\|")
     return result
 
 def hex(fed):
-    result = fed.replace("+", "%2B")
-    # this is a different ampercent, %26 does not work in api
-    result = result.replace("&", "＆")
-    result = result.replace("#", "%23")
+    # use fullwidth char
+    result = fed.replace("&", "＆")
+    result = result.replace("+", "＋")
+    result = result.replace("#", "＃")
     result = result.replace("%", "%25")
     return result

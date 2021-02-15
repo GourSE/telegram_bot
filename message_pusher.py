@@ -106,6 +106,7 @@ def text_prompt(chat_id):
         master(chat_id)
     else:
         fedf = textf.hex(fed)
+
         try:
 
             if is_send_typing:
