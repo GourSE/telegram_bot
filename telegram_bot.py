@@ -154,14 +154,14 @@ def notify_admin(is_group, from_chat_id, message_id, usr_first, mention=None, us
         if s and a:
             return
         else:
-            print(f"{colour.RED}echo from {chat_id}  error{colour.reset}")
+            print(f"{colour.RED}echo from {from_chat_id} error{colour.reset}")
         return
     elif mention is False:
         s = bot.forward_message(admin_id, from_chat_id, message_id)
         if s:
             return
         else:
-            print(f"{colour.RED}echo from {chat_id}  error{colour.reset}")
+            print(f"{colour.RED}echo from {from_chat_id} error{colour.reset}")
         return
     else:
         pass
@@ -383,13 +383,13 @@ def master():
                         print("hi")
                         if default_chat_echo_mention and default_chat_echo:
                             try:
-                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
+                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.chat_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
                                 notify_thread.start()
                             
                             except RuntimeError as error:
                                 print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
                                 time.sleep(3)
-                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
+                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.chat_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
                                 notify_thread.start()
                                 print("thread started")
                             
@@ -399,13 +399,13 @@ def master():
                         elif default_chat_echo_mention:
                             if str(boti.id) == str(msg.reply_usr_id):
                                 try:
-                                    notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
+                                    notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.chat_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
                                     notify_thread.start()
                                 
                                 except RuntimeError as error:
                                     print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
                                     time.sleep(3)
-                                    notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
+                                    notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.chat_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
                                     notify_thread.start()
                                     print("thread started")
                                 
