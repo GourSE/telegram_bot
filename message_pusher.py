@@ -38,8 +38,23 @@ else:
         bot = telegram_bot_api(config_path[1])
         config.read(config_path[1])
 
-is_send_typing = config.get("settings", "send_typing")
-is_markdown = config.get("settings", "use_markdown")
+alert = False
+
+try:
+    is_send_typing = config.get("settings", "send_typing")
+except:
+    alert = True
+    is_send_typing = True
+try:
+    is_markdown = config.get("settings", "use_markdown")
+except:
+    alert = True
+    is_markdown = False
+
+if alert:
+    print(f"{colour.RED}there is a new version of config.cfg, will set some setings to default{colour.reset}")
+else:
+    pass
 
 # set user settings
 if is_send_typing.lower() == "true":

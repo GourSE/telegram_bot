@@ -42,21 +42,51 @@ else:
         bot = telegram_bot_api(config_path[1])
         config.read(config_path[1])
 
-admin_id = config.get("settings", "admin_id")
-is_send_typing = config.get("settings", "send_typing")
-is_markdown = config.get("settings", "use_markdown")
-default_chat = config.get("settings", "default_chat")
-default_chat_echo = config.get("settings", "echo")
-is_start_ignore = config.get("settings", "ignore_old_message")
+alert = False
+
+try:
+    admin_id = config.get("settings", "admin_id")
+except:
+    admin_id = 0
+    alert = True
+try:
+    is_send_typing = config.get("settings", "send_typing")
+except:
+    alert = True
+    is_send_typing = True
+try:
+    is_markdown = config.get("settings", "use_markdown")
+except:
+    alert = True
+    is_markdown = False
+try:
+    default_chat = config.get("settings", "default_chat")
+except:
+    alert = True
+    default_chat = 0
+try:
+    default_chat_echo = config.get("settings", "echo")
+except:
+    alert = True
+    default_chat_echo = False
+try:
+    is_start_ignore = config.get("settings", "ignore_old_message")
+except:
+    alert = True
+    is_start_ignore = True
+
 default_chat_echo_mention = False
 
-
+if alert:
+    print(f"{colour.RED}there is a new version of config.cfg, will set some setings to default{colour.reset}")
+else:
+    pass
 
 # empty deafult chat will be 0
 if default_chat == "deafult chat here" or default_chat == 0:
     default_chat = 0
 
-if admin_id == "admin chat ID here":
+if admin_id == "admin chat ID here" or admin_id == 0:
     
     admin_id = input(f"\
 \n{colour.RED}You did not enter an admin chat ID{colour.reset}\n\
