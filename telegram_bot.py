@@ -380,7 +380,6 @@ def master():
                             mention = True
                         else:
                             mention = False
-                        print("hi")
                         if default_chat_echo_mention and default_chat_echo:
                             try:
                                 notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.chat_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
