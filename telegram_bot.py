@@ -348,7 +348,9 @@ def master():
     global default_chat
     global default_chat_echo
 
-    print("start updating messages real-time\n")
+
+    boti = borg(bot.get_me())
+    print(f"\n\n@{boti.username} started\n")
     offset = None
     while True:
         update = bot.get_updates(offset)
