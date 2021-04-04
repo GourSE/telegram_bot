@@ -178,7 +178,7 @@ def notify_admin(is_group, from_chat_id, message_id, usr_first, mention=None, us
     else:
         print(f"{colour.RED} unable to forward message to admin{colour.reset}\n{colour.red}user first name: {usr_first}, user ID: {from_chat_id}{colour.reset}\n\n")
 
-    s = bot.send_message(admin_id, f"[{textf.hex(usr_first)}](tg://user?id={textf.escape(str(from_chat_id))})", None, True)
+    s = bot.send_message(admin_id, f"[{textf.hex(textf.escape(usr_first))}](tg://user?id={textf.hex(str(from_chat_id))})", None, True)
     
     if s:
         pass
@@ -357,7 +357,7 @@ def master():
                 bash_output = f"{colour.green}message sent by {msg.usr_first}{colour.reset}, content: {colour.yellow}{msg.content}{colour.reset}\n"
                 offset = msg.update_id
                 # this will let the bot to skip the messages from admins forwarding back into the admin chat
-                if msg.content is not None:
+                if msg.contentgi is not None:
                     if str(msg.chat_id) == str(admin_id) and msg.reply_message_is_text is not True:
                         try:
                             admin_thread = threading.Thread(target=admin_message_handler, args=(msg.content, msg.type, msg.reply_message_id, msg.reply_message_text, msg.reply_message_is_text, msg.caption))
