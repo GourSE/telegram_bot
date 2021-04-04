@@ -3,6 +3,7 @@
 from colours import colour
 from getpass import getuser
 from organizer import message as morg
+from organizer import chat as corg
 import configparser as cfg
 from core import telegram_bot_api
 import threading
@@ -10,6 +11,8 @@ import time
 import platform
 import os
 import textf
+import start_ignore
+
 
 detected_OS = platform.system()
 
@@ -42,6 +45,16 @@ else:
 admin_id = config.get("settings", "admin_id")
 is_send_typing = config.get("settings", "send_typing")
 is_markdown = config.get("settings", "use_markdown")
+default_chat = config.get("settings", "default_chat")
+default_chat_echo = config.get("settings", "echo")
+is_start_ignore = config.get("settings", "ignore_old_message")
+default_chat_echo_mention = False
+
+
+
+# empty deafult chat will be 0
+if default_chat == "deafult chat here" or default_chat == 0:
+    default_chat = 0
 
 if admin_id == "admin chat ID here":
     
@@ -72,6 +85,21 @@ if is_markdown.lower() == "true":
 elif is_markdown.lower() == "false":
     is_markdown = False
 
+if default_chat_echo.lower() == "true":
+    default_chat_echo_mention = True
+    default_chat_echo = True
+elif default_chat_echo.lower() == "false":
+    default_chat_echo_mention = False
+    default_chat_echo = False
+elif default_chat_echo.lower() == "mention":
+    default_chat_echo = False
+    default_chat_echo_mention = True
+
+if is_start_ignore.lower() == "true":
+    is_start_ignore = True
+elif is_start_ignore.lower() == "false":
+    is_start_ignore = False
+
 
 def send_typing(text, chat_id):
     lenght = len(text)
@@ -82,8 +110,31 @@ def send_typing(text, chat_id):
 
 # admin "will" know who sent the message
 
-def notify_admin(is_group, from_chat_id, message_id, usr_first):
+def notify_admin(is_group, from_chat_id, message_id, usr_first, mention=None, usr_id=""):
     global admin_id
+    global is_markdown
+
+    if mention:
+        s = bot.forward_message(admin_id, from_chat_id, message_id)
+        if is_markdown:
+            a = bot.send_message(admin_id, f"[{textf.hex(textf.escape(usr_first))}](tg://user?id={textf.hex(str(usr_id))})")
+        else:
+            a = True
+        if s and a:
+            return
+        else:
+            print(f"{colour.RED}echo from {chat_id}  error{colour.reset}")
+        return
+    elif mention is False:
+        s = bot.forward_message(admin_id, from_chat_id, message_id)
+        if s:
+            return
+        else:
+            print(f"{colour.RED}echo from {chat_id}  error{colour.reset}")
+        return
+    else:
+        pass
+
 
     if is_group:
         return
@@ -97,7 +148,7 @@ def notify_admin(is_group, from_chat_id, message_id, usr_first):
     else:
         print(f"{colour.RED} unable to forward message to admin{colour.reset}\n{colour.red}user first name: {usr_first}, user ID: {from_chat_id}{colour.reset}\n\n")
 
-    s = bot.send_message(admin_id, f"[{textf.hex(usr_first)}](tg://user?id={from_chat_id})", None, True)
+    s = bot.send_message(admin_id, f"[{textf.hex(usr_first)}](tg://user?id={textf.escape(str(from_chat_id))})", None, True)
     
     if s:
         pass
@@ -110,69 +161,161 @@ def notify_admin(is_group, from_chat_id, message_id, usr_first):
 # will probably add photos support
 # the bot will not forward message from admin, so your account will not be shown
 
-def message_pusher(message_content, reply_usr_id, message_type, caption):
+def message_pusher(message_content, chat_id, message_type, caption=None):
     global is_markdown
     global is_send_typing
+    global default_chat_echo
 
     caption = textf.hex(caption)
 
     if message_type == "text":
         if is_send_typing:
-            send_typing(message_content, reply_usr_id)
+            send_typing(message_content, chat_id)
 
         message_content = textf.hex(message_content)
 
-        s = bot.send_message(reply_usr_id, message_content, is_markdown=is_markdown)
+        s = bot.send_message(chat_id, message_content, is_markdown=is_markdown)
         if s:
-            print(f"admin replied to {reply_usr_id}, content: {colour.BOLD}{message_content}{colour.reset}\n")
+            print(f"admin replied to {chat_id}, content: {colour.BOLD}{message_content}{colour.reset}\n")
         else:
-            print(f"message: {colour.BOLD}{message_content}{colour.reset} for {reply_usr_id} {colour.RED}not sent{colour.reset}\n ")
+            print(f"message: {colour.BOLD}{message_content}{colour.reset} for {chat_id} {colour.RED}not sent{colour.reset}\n ")
     elif message_type == "sticker":
         sticker_id = message_content.replace("sticker: ", "")
-        s = bot.send_sticker(reply_usr_id, sticker_id)
+        s = bot.send_sticker(chat_id, sticker_id)
         if s:
             print(f"{colour.BOLD}sticker{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}sticker{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
     elif message_type == "photo":
-        s = bot.send_photo(reply_usr_id, photo_id=message_content, text=caption, is_markdown=is_markdown)
+        s = bot.send_photo(chat_id, photo_id=message_content, text=caption, is_markdown=is_markdown)
         if s:
             print(f"{colour.BOLD}photo{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}photo{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
     elif message_type == "document":
-        s = bot.send_document(reply_usr_id, document_id=message_content, text=caption, is_markdown=is_markdown)
+        s = bot.send_document(chat_id, document_id=message_content, text=caption, is_markdown=is_markdown)
         if s:
             print(f"{colour.BOLD}document{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}document{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
     elif message_type == "animation":
-        s = bot.send_animation(reply_usr_id, animation_id=message_content, text=caption, is_markdown=is_markdown)
+        s = bot.send_animation(chat_id, animation_id=message_content, text=caption, is_markdown=is_markdown)
         if s:
             print(f"{colour.BOLD}animation{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}animation{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
     elif message_type == "audio":
-        s = bot.send_audio(reply_usr_id, audio_id=message_content, text=caption, is_markdown=is_markdown)
+        s = bot.send_audio(chat_id, audio_id=message_content, text=caption, is_markdown=is_markdown)
         if s:
             print(f"{colour.BOLD}audio{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}audio{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
     elif message_type == "video":
-        s = bot.send_video(reply_usr_id, video_id=message_content, text=caption, is_markdown=is_markdown)
+        s = bot.send_video(chat_id, video_id=message_content, text=caption, is_markdown=is_markdown)
         if s:
             print(f"{colour.BOLD}video{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}video{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
+def admin_message_handler(msg, msg_type, reply_message_id, reply_message_text, reply_is_text, caption=None):
+    # because reply_is_text is only True when it's actually a reply_to
+    # so I'll have to check for this one time only
+    
+    global default_chat
+    global is_markdown
+    global default_chat_echo
+    global default_chat_echo_mention
+
+    if "/id " in msg or msg == "/id":
+        msg = msg.replace("/id ", "")
+        default_chat = msg
+        message_pusher("Done", admin_id, "text")
+        return
+    elif "/md " in msg or msg == "/md":
+        msg = msg.replace("/md ", "")
+        if msg == "True" or msg == "true" or msg == "yes" or msg == "1":
+            is_markdown = True
+            message_pusher("markdown is now True", admin_id, "text")
+            return
+        elif msg == "False" or msg == "false" or msg == "no" or msg == "0":
+            is_markdown = False
+            message_pusher("markdown is now False", admin_id, "text")
+            return
+        else:
+            if is_markdown:
+                is_markdown = False
+                message_pusher("markdown is now False", admin_id, "text")
+            elif not is_markdown:
+                is_markdown = True
+                message_pusher("markdown is now True", admin_id, "text")
+            else:
+                is_markdown = True
+                message_pusher("markdown is now True", admin_id, "text")
+    elif "/echo " in msg or msg == "/echo":
+        msg = msg.replace("/echo ", "")
+        if msg == "True" or msg == "true" or msg == "yes" or msg == "1":
+            default_chat_echo_mention = True
+            default_chat_echo = True
+            message_pusher("echo is now True", admin_id, "text")
+            return
+        elif msg == "False" or msg == "false" or msg == "no" or msg == "0":
+            default_chat_echo_mention = False
+            default_chat_echo = False
+            message_pusher("echo is now False", admin_id, "text")
+            return
+        elif msg == "2" or msg == "mention" or msg == "m":
+            default_chat_echo = False
+            default_chat_echo_mention = True
+            message_pusher("echo is now mention only", admin_id, "text")
+            return
+        else:
+            if default_chat_echo:
+                default_chat_echo_mention = False
+                default_chat_echo = False
+                message_pusher("echo is now False", admin_id, "text")
+            elif not default_chat_echo:
+                default_chat_echo_mention = True
+                default_chat_echo = True
+                message_pusher("echo is now True", admin_id, "text")
+            else:
+                default_chat_echo_mention = True
+                default_chat_echo = True
+                message_pusher("echo is now True", admin_id, "text")
+        return
+    elif msg == "/status":
+        if default_chat != 0:
+            chati = corg(bot.get_chat(default_chat))
+            if default_chat_echo_mention and default_chat_echo:
+                echo_mode = "True"
+            elif default_chat_echo_mention:
+                echo_mode = "Mention only"
+            else:
+                echo_mode = "False"
+            bot.send_message(admin_id, f"default chat info\n\nchat title: `{textf.hex(textf.escape(chati.chat_title))}`\nchat ID: `{textf.hex(textf.escape(default_chat))}`\nmarkdown: {is_markdown}\necho: {echo_mode}", is_markdown=True)
+        else:
+            message_pusher("No chat set", admin_id, "text")
+        return
+    elif msg == "/reset":
+        default_chat = 0
+        message_pusher("Done", admin_id, "text")
+        return
+
+    elif default_chat != 0:
+        message_pusher(msg, default_chat, msg_type, caption=caption)
+        return
+    else:
+        print(f"{colour.RED}ignored an admin message{colour.reset}\n")
+        return
 
 def master():
     global admin_id
+    global default_chat
+    global default_chat_echo
 
     print("start updating messages real-time\n")
     offset = None
@@ -184,7 +327,56 @@ def master():
                 bash_output = f"{colour.green}message sent by {msg.usr_first}{colour.reset}, content: {colour.yellow}{msg.content}{colour.reset}\n"
                 offset = msg.update_id
                 # this will let the bot to skip the messages from admins forwarding back into the admin chat
-                if str(msg.chat_id) != str(admin_id):
+                if str(msg.chat_id) == str(admin_id) and msg.reply_message_is_text is not True:
+                    try:
+                        admin_thread = threading.Thread(target=admin_message_handler, args=(msg.content, msg.type, msg.reply_message_id, msg.reply_message_text, msg.reply_message_is_text, msg.caption))
+                        admin_thread.start()
+                    
+                    except RuntimeError as error:
+                        print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
+                        time.sleep(3)
+                        admin_thread = threading.Thread(target=admin_message_handler, args=(msg.msg.content, msg.type, msg.reply_message_id, msg.reply_message_text, msg.reply_message_is_text, msg.caption))
+                        admin_thread.start()
+                        print("thread started")
+                    
+                    except Exception as error:
+                        print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
+                        exit()
+                elif str(msg.chat_id) == str(default_chat):
+                    if default_chat_echo and default_chat_echo_mention:
+                        try:
+                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, True, msg.usr_id))
+                            notify_thread.start()
+                        
+                        except RuntimeError as error:
+                            print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
+                            time.sleep(3)
+                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, True, msg.usr_id))
+                            notify_thread.start()
+                            print("thread started")
+                        
+                        except Exception as error:
+                            print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
+                            exit()
+                    elif default_chat_echo:
+                        try:
+                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, False))
+                            notify_thread.start()
+                        
+                        except RuntimeError as error:
+                            print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
+                            time.sleep(3)
+                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, False))
+                            notify_thread.start()
+                            print("thread started")
+                        
+                        except Exception as error:
+                            print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
+                            exit()
+                    else:
+                        pass
+
+                elif str(msg.chat_id) != str(admin_id) and str(default_chat) == "0":
                     print(bash_output)
                     if msg.is_group:
                         pass
@@ -244,5 +436,10 @@ def master():
             print(f"{colour.WARNING}ERROR: unknown error, the script will stop{colour.reset}\n{error}")
             exit()
 
+
+if is_start_ignore:
+    start_ignore.main()
+else:
+    print(f"{colour.GREEN}ignore old message is set to off{colour.reset}")
 
 master()

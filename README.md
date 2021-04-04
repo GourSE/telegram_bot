@@ -21,6 +21,31 @@
     ![](./images/01.png)  
       
       by that, you can send text message, sticker or media to a group chat or user
+  -------
+  ### default chat
+  - to set a default chat ID
+    > default chat can be both private chat and group
+    - `/id <default chat id>`
+    - now send any message or media, bot will send it to the chat
+    - note that replied message and command below will not be sent
+    - the original method will still be useable
+  - to control echo
+    > echo will forward message from default chat to admin chat
+    - `/echo <0/1/2>`
+      - 0 - off
+      - 1 - on
+      - 2 - mentioned only
+  - to set markdown
+    > a one time method to turn on/off markdown
+    - `/md <0/1>`
+      - 0 - off
+      - 1 - on
+  - to check default chat status
+    - `/status`
+  - to disable default chat
+    > a one time method to disable default chat if default chat is set in config.cfg
+    - `/reset`
+
 
 -------
 
