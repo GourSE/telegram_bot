@@ -4,6 +4,7 @@ from colours import colour
 from getpass import getuser
 from organizer import message as morg
 from organizer import chat as corg
+from organizer import bot as borg
 import configparser as cfg
 from core import telegram_bot_api
 import threading
@@ -144,7 +145,7 @@ def notify_admin(is_group, from_chat_id, message_id, usr_first, mention=None, us
     global admin_id
     global is_markdown
 
-    if mention:
+    if mention is True:
         s = bot.forward_message(admin_id, from_chat_id, message_id)
         if is_markdown:
             a = bot.send_message(admin_id, f"[{textf.hex(textf.escape(usr_first))}](tg://user?id={textf.hex(str(usr_id))})")
@@ -357,7 +358,7 @@ def master():
                 bash_output = f"{colour.green}message sent by {msg.usr_first}{colour.reset}, content: {colour.yellow}{msg.content}{colour.reset}\n"
                 offset = msg.update_id
                 # this will let the bot to skip the messages from admins forwarding back into the admin chat
-                if msg.contentgi is not None:
+                if msg.content is not None:
                     if str(msg.chat_id) == str(admin_id) and msg.reply_message_is_text is not True:
                         try:
                             admin_thread = threading.Thread(target=admin_message_handler, args=(msg.content, msg.type, msg.reply_message_id, msg.reply_message_text, msg.reply_message_is_text, msg.caption))
@@ -374,39 +375,45 @@ def master():
                             print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
                             exit()
                     elif str(msg.chat_id) == str(default_chat):
-                        if default_chat_echo and default_chat_echo_mention:
-                            try:
-                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, True, msg.usr_id))
-                                notify_thread.start()
-                            
-                            except RuntimeError as error:
-                                print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
-                                time.sleep(3)
-                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, True, msg.usr_id))
-                                notify_thread.start()
-                                print("thread started")
-                            
-                            except Exception as error:
-                                print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
-                                exit()
-                        elif default_chat_echo:
-                            try:
-                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, False))
-                                notify_thread.start()
-                            
-                            except RuntimeError as error:
-                                print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
-                                time.sleep(3)
-                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, False))
-                                notify_thread.start()
-                                print("thread started")
-                            
-                            except Exception as error:
-                                print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
-                                exit()
+                        boti = borg(bot.get_me())
+                        if str(boti.id) == str(msg.reply_usr_id):
+                            mention = True
                         else:
-                            pass
-
+                            mention = False
+                        print("hi")
+                        if default_chat_echo_mention and default_chat_echo:
+                            try:
+                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
+                                notify_thread.start()
+                            
+                            except RuntimeError as error:
+                                print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
+                                time.sleep(3)
+                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
+                                notify_thread.start()
+                                print("thread started")
+                            
+                            except Exception as error:
+                                print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
+                                exit()
+                        elif default_chat_echo_mention:
+                            if str(boti.id) == str(msg.reply_usr_id):
+                                try:
+                                    notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
+                                    notify_thread.start()
+                                
+                                except RuntimeError as error:
+                                    print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
+                                    time.sleep(3)
+                                    notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
+                                    notify_thread.start()
+                                    print("thread started")
+                                
+                                except Exception as error:
+                                    print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
+                                    exit()
+                            else:
+                                pass
                     elif str(msg.chat_id) != str(admin_id) and str(default_chat) == "0":
                         print(bash_output)
                         if msg.is_group:

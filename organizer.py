@@ -339,3 +339,35 @@ class chat():
 
             if chat_permissions["can_pin_messages"] == "true":
                 self.can_pin_messages = True
+
+class bot():
+    def __init__(self, bot_info):
+        self.id = None
+        self.first_name = None
+        self.username = None
+        self.can_join_groups = None
+        self.can_read_all_group_messages = None
+        self.supports_inline_queries = None
+        self.ok = True
+
+        if bot_info is None:
+            print("ERROR: can't get bot info")
+            self.ok = False
+        else:
+            pass
+
+        try:
+            self.id = bot_info["id"]
+            self.first_name = bot_info["first_name"]
+            self.username = bot_info["username"]
+            self.can_join_groups = bot_info["can_join_groups"]
+            self.can_read_all_group_messages = bot_info["can_read_all_group_messages"]
+            self.supports_inline_queries = bot_info["supports_inline_queries"]
+        except:
+            bot_info = bot_info["result"]
+            self.id = bot_info["id"]
+            self.first_name = bot_info["first_name"]
+            self.username = bot_info["username"]
+            self.can_join_groups = bot_info["can_join_groups"]
+            self.can_read_all_group_messages = bot_info["can_read_all_group_messages"]
+            self.supports_inline_queries = bot_info["supports_inline_queries"]
