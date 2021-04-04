@@ -357,102 +357,105 @@ def master():
                 bash_output = f"{colour.green}message sent by {msg.usr_first}{colour.reset}, content: {colour.yellow}{msg.content}{colour.reset}\n"
                 offset = msg.update_id
                 # this will let the bot to skip the messages from admins forwarding back into the admin chat
-                if str(msg.chat_id) == str(admin_id) and msg.reply_message_is_text is not True:
-                    try:
-                        admin_thread = threading.Thread(target=admin_message_handler, args=(msg.content, msg.type, msg.reply_message_id, msg.reply_message_text, msg.reply_message_is_text, msg.caption))
-                        admin_thread.start()
-                    
-                    except RuntimeError as error:
-                        print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
-                        time.sleep(3)
-                        admin_thread = threading.Thread(target=admin_message_handler, args=(msg.msg.content, msg.type, msg.reply_message_id, msg.reply_message_text, msg.reply_message_is_text, msg.caption))
-                        admin_thread.start()
-                        print("thread started")
-                    
-                    except Exception as error:
-                        print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
-                        exit()
-                elif str(msg.chat_id) == str(default_chat):
-                    if default_chat_echo and default_chat_echo_mention:
+                if msg.content is not None:
+                    if str(msg.chat_id) == str(admin_id) and msg.reply_message_is_text is not True:
                         try:
-                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, True, msg.usr_id))
-                            notify_thread.start()
+                            admin_thread = threading.Thread(target=admin_message_handler, args=(msg.content, msg.type, msg.reply_message_id, msg.reply_message_text, msg.reply_message_is_text, msg.caption))
+                            admin_thread.start()
                         
                         except RuntimeError as error:
                             print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
                             time.sleep(3)
-                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, True, msg.usr_id))
-                            notify_thread.start()
+                            admin_thread = threading.Thread(target=admin_message_handler, args=(msg.msg.content, msg.type, msg.reply_message_id, msg.reply_message_text, msg.reply_message_is_text, msg.caption))
+                            admin_thread.start()
                             print("thread started")
                         
                         except Exception as error:
                             print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
                             exit()
-                    elif default_chat_echo:
+                    elif str(msg.chat_id) == str(default_chat):
+                        if default_chat_echo and default_chat_echo_mention:
+                            try:
+                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, True, msg.usr_id))
+                                notify_thread.start()
+                            
+                            except RuntimeError as error:
+                                print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
+                                time.sleep(3)
+                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, True, msg.usr_id))
+                                notify_thread.start()
+                                print("thread started")
+                            
+                            except Exception as error:
+                                print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
+                                exit()
+                        elif default_chat_echo:
+                            try:
+                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, False))
+                                notify_thread.start()
+                            
+                            except RuntimeError as error:
+                                print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
+                                time.sleep(3)
+                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, False))
+                                notify_thread.start()
+                                print("thread started")
+                            
+                            except Exception as error:
+                                print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
+                                exit()
+                        else:
+                            pass
+
+                    elif str(msg.chat_id) != str(admin_id) and str(default_chat) == "0":
+                        print(bash_output)
+                        if msg.is_group:
+                            pass
+                        else:
+                            try:
+                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first))
+                                notify_thread.start()
+                            
+                            except RuntimeError as error:
+                                print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
+                                time.sleep(3)
+                                notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first))
+                                notify_thread.start()
+                                print("thread started")
+                            
+                            except Exception as error:
+                                print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
+                                exit()
+                    elif msg.reply_is_forward:
+                        bash_output = f"admin replied to {msg.reply_forward_usr_first}, content: {msg.content}\n"
+                        # print(bash_output)
                         try:
-                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, False))
-                            notify_thread.start()
-                        
+                            reply_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_forward_usr_id, msg.type, msg.caption))
+                            reply_thread.start()
+
                         except RuntimeError as error:
                             print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
-                            time.sleep(3)
-                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first, False))
-                            notify_thread.start()
+                            reply_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_forward_usr_id, msg.type, msg.caption))
+                            reply_thread.start()
                             print("thread started")
-                        
+
                         except Exception as error:
                             print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
                             exit()
-                    else:
-                        pass
-
-                elif str(msg.chat_id) != str(admin_id) and str(default_chat) == "0":
-                    print(bash_output)
-                    if msg.is_group:
-                        pass
-                    else:
+                    elif msg.reply_message_is_text:
+                        bash_output = f"admin sent a message to chat ID: {msg.reply_message_text}, content: {msg.content}\n "
+                        # print(bash_output)
                         try:
-                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first))
-                            notify_thread.start()
-                        
+                            send_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_message_text, msg.type, msg.caption))
+                            send_thread.start()
+
                         except RuntimeError as error:
                             print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
-                            time.sleep(3)
-                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.usr_id, msg.message_id, msg.usr_first))
-                            notify_thread.start()
+                            send_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_message_text, msg.type, msg.caption))
+                            send_thread.start()
                             print("thread started")
-                        
-                        except Exception as error:
-                            print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
-                            exit()
-                elif msg.reply_is_forward:
-                    bash_output = f"admin replied to {msg.reply_forward_usr_first}, content: {msg.content}\n"
-                    # print(bash_output)
-                    try:
-                        reply_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_forward_usr_id, msg.type, msg.caption))
-                        reply_thread.start()
-
-                    except RuntimeError as error:
-                        print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
-                        reply_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_forward_usr_id, msg.type, msg.caption))
-                        reply_thread.start()
-                        print("thread started")
-
-                    except Exception as error:
-                        print(f"{colour.WARNING}ERROR: unknown error{colour.reset}, the script will stop\n{error}")
-                        exit()
-                elif msg.reply_message_is_text:
-                    bash_output = f"admin sent a message to chat ID: {msg.reply_message_text}, content: {msg.content}\n "
-                    # print(bash_output)
-                    try:
-                        send_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_message_text, msg.type, msg.caption))
-                        send_thread.start()
-
-                    except RuntimeError as error:
-                        print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
-                        send_thread = threading.Thread(target=message_pusher, args=(msg.content, msg.reply_message_text, msg.type, msg.caption))
-                        send_thread.start()
-                        print("thread started")
+                else:
+                    pass
 
         except KeyError as error:
             print(f"{colour.WARNING}ERROR: no bot token{colour.RED} or another getUpdate session running{colour.reset}\n{colour.YELLOW}plese check 'config.cfg'\n\nKeyError: {error}{colour.reset}\n")
