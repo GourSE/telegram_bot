@@ -30,6 +30,9 @@ class message():
         self.reply_is_forward =                 None
         self.caption =                          None
 
+        self.inline_id = None
+        self.inline_query = None
+
         user_first =                            ""
         user_last =                             ""
         reply_user_first =                      ""
@@ -58,10 +61,31 @@ class message():
 
                 fed_message = get_updates_result["message"]
                 self.update_id = get_updates_result["update_id"]
+
+        
         except:
-            print("ERROR: can't get result")
-            self.content = None
-            return
+            try:
+                try:
+                    #intended
+                    inline_query = get_updates_result["inline_query"]
+
+                    #update ID
+                    self.update_id = get_updates_result["update_id"]
+                    self.type = "inline"
+
+                except:
+                    #in case
+
+                    get_updates_result = get_updates_result["result"]
+
+                    inline_query = get_updates_result["inline_query"]
+                    self.update_id = get_updates_result["update_id"]
+                    self.type = "inline"
+            
+            except:
+                print("ERROR: can't get result")
+                self.content = None
+                return
 
 
         #try to get message content in json
@@ -69,165 +93,184 @@ class message():
         #starting with the most common file type to the less common one
         #only text, sticker, photo supported
         #there's probably a better solution I don't know
-
-        try:
-            self.content = fed_message["text"]
-            self.type = "text"
-        except:
+        if self.type != "inline":
             try:
-                file_unique_id = fed_message["sticker"]["file_id"]
-                self.content = f"sticker: {file_unique_id}"
-                self.type = "sticker"
+                self.content = fed_message["text"]
+                self.type = "text"
             except:
                 try:
-                    file_unique_id = fed_message["photo"][file_unique_id]
-                    self.content = f"photo, {file_unique_id}"
-                    self.type = "photo"
+                    file_unique_id = fed_message["sticker"]["file_id"]
+                    self.content = f"sticker: {file_unique_id}"
+                    self.type = "sticker"
                 except:
-                    self.content = None
-                    self.type = None
+                    try:
+                        file_unique_id = fed_message["photo"][file_unique_id]
+                        self.content = f"photo, {file_unique_id}"
+                        self.type = "photo"
+                    except:
+                        self.content = None
+                        self.type = None
 
-        #chat
-        chat_type = fed_message["chat"]["type"]
-        if chat_type == "group" or chat_type == "supergroup":
-            self.is_group = True
-        else:
-            self.is_group = False
+            #chat
+            chat_type = fed_message["chat"]["type"]
+            if chat_type == "group" or chat_type == "supergroup":
+                self.is_group = True
+            else:
+                self.is_group = False
 
-        if self.is_group:
-            self.chat_title = fed_message["chat"]["title"]
-            self.chat_id = fed_message["chat"]["id"]
-        else:
-            self.chat_title = fed_message["from"]["first_name"]
-            self.chat_id = fed_message["from"]["id"]
+            if self.is_group:
+                self.chat_title = fed_message["chat"]["title"]
+                self.chat_id = fed_message["chat"]["id"]
+            else:
+                self.chat_title = fed_message["from"]["first_name"]
+                self.chat_id = fed_message["from"]["id"]
 
 
-        #no last name, I don't want to check if there's a lastname or not
-        #same as user ID, the t.me/ID one
-        #probably will be included in the future
-        user_first = fed_message["from"]["first_name"]
-        try: 
-            user_last = fed_message['from']['last_name']
-            self.usr_last = user_last
-        except:
-            pass
-
-        self.usr_first = user_first
-        self.usr_name = f"{user_first} {user_last}"
-
-        #message ID
-        self.message_id = fed_message["message_id"]
-
-        #userID
-        self.usr_id = fed_message["from"]["id"]
-        
-        #check if the message is a reply_to
-        try:
-            self.is_reply = True
-            self.reply_message_id = fed_message["reply_to_message"]["message_id"]
-            try:
-                self.reply_message_text = fed_message["reply_to_message"]["text"]
-                self.reply_message_is_text = True
+            #same as user ID, the t.me/ID one
+            #probably will be included in the future
+            user_first = fed_message["from"]["first_name"]
+            try: 
+                user_last = fed_message['from']['last_name']
+                self.usr_last = user_last
+                self.usr_name = f"{user_first} {user_last}"
             except:
-                self.reply_message_text = None
-                self.reply_message_is_text = False
+                self.usr_name = f"{user_first}"
 
+            self.usr_first = user_first
 
-            self.reply_usr_id = fed_message["reply_to_message"]["from"]["id"]
-            reply_user_first = fed_message["reply_to_message"]["from"]["first_name"]
-            try:
-                reply_user_last = fed_message['reply_to_message']['from']['last_name']
-                self.reply_usr_last = reply_user_last
-            except:
-                pass
-            self.reply_usr_first = reply_user_first
-            self.reply_usr_name = f"{reply_user_first} {reply_user_last}"
+            #message ID
+            self.message_id = fed_message["message_id"]
 
+            #userID
+            self.usr_id = fed_message["from"]["id"]
             
+            #check if the message is a reply_to
             try:
-                #check if message is forwared
-                self.reply_forward_usr_id = fed_message["reply_to_message"]["forward_from"]["id"]
-                self.reply_forward_usr_first = fed_message["reply_to_message"]["forward_from"]["first_name"]
-                self.reply_is_forward = True
+                self.is_reply = True
+                self.reply_message_id = fed_message["reply_to_message"]["message_id"]
+                try:
+                    self.reply_message_text = fed_message["reply_to_message"]["text"]
+                    self.reply_message_is_text = True
+                except:
+                    self.reply_message_text = None
+                    self.reply_message_is_text = False
+
+
+                self.reply_usr_id = fed_message["reply_to_message"]["from"]["id"]
+                reply_user_first = fed_message["reply_to_message"]["from"]["first_name"]
+                try:
+                    reply_user_last = fed_message['reply_to_message']['from']['last_name']
+                    self.reply_usr_last = reply_user_last
+                    self.reply_usr_name = f"{reply_user_first} {reply_user_last}"
+                except:
+                    self.reply_usr_name = f"{reply_user_first}"
+                self.reply_usr_first = reply_user_first
+
+                
+                try:
+                    #check if message is forwared
+                    self.reply_forward_usr_id = fed_message["reply_to_message"]["forward_from"]["id"]
+                    self.reply_forward_usr_first = fed_message["reply_to_message"]["forward_from"]["first_name"]
+                    self.reply_is_forward = True
+                except:
+                    self.reply_forward_usr_id = None
+                    self.reply_forward_usr_first = None
+                    self.reply_is_forward = False
             except:
                 self.reply_forward_usr_id = None
+                self.reply_message_is_text = False
                 self.reply_forward_usr_first = None
+                self.reply_message_id = None
+                self.reply_usr_id = None
+                self.reply_usr_first = None
+                self.is_reply = False
                 self.reply_is_forward = False
-        except:
-            self.reply_forward_usr_id = None
-            self.reply_message_is_text = False
-            self.reply_forward_usr_first = None
-            self.reply_message_id = None
-            self.reply_usr_id = None
-            self.reply_usr_first = None
-            self.is_reply = False
-            self.reply_is_forward = False
-            self.reply_message_text = None
-        
-        # for documents
+                self.reply_message_text = None
+            
+            # for documents
 
 
-        # photo id will be the largest one(the third one)
+            # photo id will be the largest one(the third one)
 
-        try:
             try:
-                self.content = fed_message["photo"][2]["file_id"]
-            except:
                 try:
-                    self.content = fed_message["photo"][1]["file_id"]
+                    self.content = fed_message["photo"][2]["file_id"]
                 except:
-                    self.content = fed_message["photo"][0]["file_id"]
+                    try:
+                        self.content = fed_message["photo"][1]["file_id"]
+                    except:
+                        self.content = fed_message["photo"][0]["file_id"]
 
-            self.type = "photo"
-            try:
-                self.caption = fed_message["caption"]
+                self.type = "photo"
+                try:
+                    self.caption = fed_message["caption"]
+                except:
+                    pass
             except:
                 pass
-        except:
-            pass
 
 
-        try:
-            self.content = fed_message["document"]["file_id"]
-            self.type = "document"
             try:
-                self.caption = fed_message["caption"]
+                self.content = fed_message["document"]["file_id"]
+                self.type = "document"
+                try:
+                    self.caption = fed_message["caption"]
+                except:
+                    pass
             except:
                 pass
-        except:
-            pass
 
 
-        try:
-            self.content = fed_message["animation"]["file_id"]
-            self.type = "animation"
             try:
-                self.caption = fed_message["caption"]
+                self.content = fed_message["animation"]["file_id"]
+                self.type = "animation"
+                try:
+                    self.caption = fed_message["caption"]
+                except:
+                    pass
             except:
                 pass
-        except:
-            pass
 
 
-        try:
-            self.content = fed_message["audio"]["file_id"]
-            self.type = "audio"
             try:
-                self.caption = fed_message["caption"]
+                self.content = fed_message["audio"]["file_id"]
+                self.type = "audio"
+                try:
+                    self.caption = fed_message["caption"]
+                except:
+                    pass
             except:
                 pass
-        except:
-            pass
 
-        try:
-            self.content = fed_message["video"]["file_id"]
-            self.type = "video"
             try:
-                self.caption = fed_message["caption"]
+                self.content = fed_message["video"]["file_id"]
+                self.type = "video"
+                try:
+                    self.caption = fed_message["caption"]
+                except:
+                    pass
             except:
                 pass
-        except:
-            pass
+        else:
+
+
+            # inline queries
+
+            self.inline_id = inline_query["id"]
+
+            user_first = inline_query["from"]["first_name"]
+            try: 
+                user_last = inline_query['from']['last_name']
+                self.usr_last = user_last
+                self.usr_name = f"{user_first} {user_last}"
+            except:
+                self.usr_name = f"{user_first}"
+
+            self.usr_first = user_first
+
+            self.usr_id = inline_query["from"]["id"]
+            self.inline_query = inline_query["query"]
+
 
 class chat():
     def __init__(self, chat_info):
@@ -295,9 +338,9 @@ class chat():
                     user_first = chat_info["result"]["first_name"]
                     try:
                         user_last = chat_info['result']['last_name']
+                        self.chat_title = f"{user_first} {user_last}"
                     except:
-                        pass
-                    self.chat_title = f"{user_first} {user_last}"
+                        self.chat_title = f"{user_first}"
 
                 if self.chat_type != "private":
                     chat_permissions = chat_info["result"]["permissions"]
@@ -339,6 +382,7 @@ class chat():
 
             if chat_permissions["can_pin_messages"] == "true":
                 self.can_pin_messages = True
+
 
 class bot():
     def __init__(self, bot_info):
