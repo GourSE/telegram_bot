@@ -104,7 +104,7 @@
 
   `sudo apt install clang`
 
-      ***If you can't install them or not looking forward to, skip the next 2 steps***
+      If you can't install them or not looking forward to, skip the next 2 steps
 
 
 - Build the program with `make`
