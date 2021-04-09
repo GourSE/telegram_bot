@@ -194,7 +194,21 @@
 
   `pip install -r requirements.txt -U`
 
-- Launch the program with python
+- Launch with batch file
+
+  ***open one for the batch files***
+
+  `update.bat`
+
+  > update project and python requirements
+
+  `update + <script name>.bat`
+
+  > update project and open script
+
+      Batch files sould not be moved, please create shortcut if you're looking forward to set an icon on the desktop.
+  
+- Launch the program with command line
 
   ***Choose one of the three scripts***
 
