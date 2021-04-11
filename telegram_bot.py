@@ -219,7 +219,7 @@ def notify_admin(message_obj):
     else:
         pass
 
-    s = bot.forward_message(admin_id, msg.chat_id, msg.chat_id)
+    s = bot.forward_message(admin_id, msg.chat_id, msg.message_id)
 
     if s:
         pass
