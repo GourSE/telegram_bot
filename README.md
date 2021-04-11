@@ -45,7 +45,11 @@
   - to disable default chat
     > a one time method to disable default chat if default chat is set in config.cfg
     - `/reset`
-
+  - to set typing
+    > a one time method to turn on/off typing
+    - `/typing <0/1>`
+      - 0 - off
+      - 1 - on
 
 -------
 

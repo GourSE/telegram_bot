@@ -310,6 +310,7 @@ def admin_message_handler(message_obj):
     
     global default_chat
     global is_markdown
+    global is_send_typing
     global default_chat_echo
     global default_chat_echo_mention
 
@@ -371,6 +372,26 @@ def admin_message_handler(message_obj):
                 default_chat_echo = True
                 message_pusher("echo is now True", admin_id, "text")
         return
+    elif "/typing " in msg.content or msg.content == "/typing":
+        msg.content = msg.content.replace("/typing ", "")
+        if msg.content == "True" or msg.content == "true" or msg.content == "yes" or msg.content == "1":
+            is_send_typing = True
+            message_pusher("send typing is now True", admin_id, "text")
+            return
+        elif msg.content == "False" or msg.content == "false" or msg.content == "no" or msg.content == "0":
+            is_send_typing = False
+            message_pusher("send typing is now False", admin_id, "text")
+            return
+        else:
+            if is_send_typing:
+                is_send_typing = False
+                message_pusher("send typing is now False", admin_id, "text")
+            elif not is_send_typing:
+                is_send_typing = True
+                message_pusher("send typing is now True", admin_id, "text")
+            else:
+                is_send_typing = True
+                message_pusher("send typing is now True", admin_id, "text")
     elif msg.content == "/status":
         if default_chat != 0:
             chati = corg(bot.get_chat(default_chat))
@@ -380,7 +401,7 @@ def admin_message_handler(message_obj):
                 echo_mode = "Mention only"
             else:
                 echo_mode = "False"
-            bot.send_message(admin_id, f"default chat info\n\nchat title: `{textf.hex(textf.escape(chati.chat_title))}`\nchat ID: `{textf.hex(textf.escape(default_chat))}`\nmarkdown: {is_markdown}\necho: {echo_mode}", is_markdown=True)
+            bot.send_message(admin_id, f"default chat info\n\nchat title: `{textf.hex(textf.escape(chati.chat_title))}`\nchat ID: `{textf.hex(textf.escape(default_chat))}`\nmarkdown: {is_markdown}\necho: {echo_mode}\nsend typing: {is_send_typing}", is_markdown=True)
         else:
             message_pusher("No chat set", admin_id, "text")
         return
