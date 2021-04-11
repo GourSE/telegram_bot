@@ -1,5 +1,6 @@
 echo off
 cls
+cd ..
 git pull
-python message_pusher.py
+python support_bot.py
 pause

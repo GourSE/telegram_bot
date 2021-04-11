@@ -1,5 +1,5 @@
 echo off
 cls
-git pull
+cd ..
 python telegram_bot.py
 pause

@@ -1,5 +1,5 @@
 echo off
 cls
-git pull
+cd ..
 python support_bot.py
 pause
