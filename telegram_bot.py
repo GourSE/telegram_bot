@@ -452,13 +452,13 @@ def master():
                             exit()
                     elif str(msg.chat_id) == str(default_chat):
                         try:
-                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.chat_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
+                            notify_thread = threading.Thread(target=notify_admin, args=(message_obj, ))
                             notify_thread.start()
                         
                         except RuntimeError as error:
                             print(f"{colour.RED}ERROR: message postponed{colour.reset}\nRuntimeError: {error}")
                             time.sleep(3)
-                            notify_thread = threading.Thread(target=notify_admin, args=(msg.is_group, msg.chat_id, msg.message_id, msg.usr_first, mention, msg.usr_id))
+                            notify_thread = threading.Thread(target=notify_admin, args=(message_obj, ))
                             notify_thread.start()
                             print("thread started")
                         
