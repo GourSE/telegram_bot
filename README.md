@@ -50,6 +50,10 @@
     - `/typing <0/1>`
       - 0 - off
       - 1 - on
+  - to reply message
+    > reply message in default chat
+    - `/r<reply_to_message_id> <text>`
+      - if default chat is set and mentioned, bot will send a command to reply
 
 -------
 

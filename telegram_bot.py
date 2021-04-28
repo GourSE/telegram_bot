@@ -186,18 +186,19 @@ def notify_admin(message_obj):
 
     msg = morg(message_obj)
 
+    mention = False
+
     boti = borg(bot.get_me())
     if str(boti.id) == str(msg.reply_usr_id):
         mention = True
-    else:
-        mention = False
 
     if mention is True:
         s = bot.forward_message(admin_id, msg.chat_id, msg.message_id)
         if is_markdown:
-            a = bot.send_message(admin_id, f"[{textf.hex(textf.escape(msg.usr_name))}](tg://user?id={textf.hex(str(msg.usr_id))})")
+            a = bot.send_message(admin_id, f"`[{textf.hex(textf.escape(msg.usr_name))}](tg://user?id={textf.escape(textf.hex(str(msg.usr_id)))})`\n\nre: {textf.hex(textf.escape(msg.reply_message_text))}\n\nto reply this message: /r{msg.message_id} text", is_markdown=True)
         else:
-            a = True
+            a = bot.send_message(admin_id, f"[{textf.hex(textf.escape(msg.usr_name))}](tg://user?id={textf.hex(str(msg.chat_id))})\n\nre: {textf.hex(textf.escape(msg.reply_message_text))}\n\nto reply this message: /r{msg.message_id} text", is_markdown=True)
+
         if s and a:
             return
         else:
@@ -239,7 +240,7 @@ def notify_admin(message_obj):
 # will probably add photos support
 # the bot will not forward message from admin, so your account will not be shown
 
-def message_pusher(message_content, chat_id, message_type, caption=None):
+def message_pusher(message_content, chat_id, message_type, caption=None, reply=None):
     global is_markdown
     global is_send_typing
     global default_chat_echo
@@ -256,49 +257,49 @@ def message_pusher(message_content, chat_id, message_type, caption=None):
 
         message_content = textf.hex(message_content)
 
-        s = bot.send_message(chat_id, message_content, is_markdown=is_markdown)
+        s = bot.send_message(chat_id, message_content, is_markdown=is_markdown, reply_to_message_id=reply)
         if s:
             print(f"admin replied to {chat_id}, content: {colour.BOLD}{message_content}{colour.reset}\n")
         else:
             print(f"message: {colour.BOLD}{message_content}{colour.reset} for {chat_id} {colour.RED}not sent{colour.reset}\n ")
     elif message_type == "sticker":
         sticker_id = message_content.replace("sticker: ", "")
-        s = bot.send_sticker(chat_id, sticker_id)
+        s = bot.send_sticker(chat_id, sticker_id, reply_to_message_id=reply)
         if s:
             print(f"{colour.BOLD}sticker{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}sticker{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
     elif message_type == "photo":
-        s = bot.send_photo(chat_id, photo_id=message_content, text=caption, is_markdown=is_markdown)
+        s = bot.send_photo(chat_id, photo_id=message_content, text=caption, is_markdown=is_markdown, reply_to_message_id=reply)
         if s:
             print(f"{colour.BOLD}photo{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}photo{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
     elif message_type == "document":
-        s = bot.send_document(chat_id, document_id=message_content, text=caption, is_markdown=is_markdown)
+        s = bot.send_document(chat_id, document_id=message_content, text=caption, is_markdown=is_markdown, reply_to_message_id=reply)
         if s:
             print(f"{colour.BOLD}document{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}document{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
     elif message_type == "animation":
-        s = bot.send_animation(chat_id, animation_id=message_content, text=caption, is_markdown=is_markdown)
+        s = bot.send_animation(chat_id, animation_id=message_content, text=caption, is_markdown=is_markdown, reply_to_message_id=reply)
         if s:
             print(f"{colour.BOLD}animation{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}animation{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
     elif message_type == "audio":
-        s = bot.send_audio(chat_id, audio_id=message_content, text=caption, is_markdown=is_markdown)
+        s = bot.send_audio(chat_id, audio_id=message_content, text=caption, is_markdown=is_markdown, reply_to_message_id=reply)
         if s:
             print(f"{colour.BOLD}audio{colour.reset} sent\n")
         else:
             print(f"{colour.BOLD}audio{colour.reset} {colour.RED}not sent{colour.reset}\n")
 
     elif message_type == "video":
-        s = bot.send_video(chat_id, video_id=message_content, text=caption, is_markdown=is_markdown)
+        s = bot.send_video(chat_id, video_id=message_content, text=caption, is_markdown=is_markdown, reply_to_message_id=reply)
         if s:
             print(f"{colour.BOLD}video{colour.reset} sent\n")
         else:
@@ -405,10 +406,26 @@ def admin_message_handler(message_obj):
         else:
             message_pusher("No chat set", admin_id, "text")
         return
+
     elif msg.content == "/reset":
         default_chat = 0
         message_pusher("Done", admin_id, "text")
         return
+
+    elif "/r" in msg.content and msg.content[0] == "/" and default_chat != 0:
+        if msg.content.find(" ") != -1:
+            r_id = msg.content[:msg.content.find(" ")]
+            r_id = r_id.replace("/r", "")
+            push_content = msg.content[msg.content.find(" "):]
+        else:
+            return
+
+        if push_content != "" and push_content != " ":
+            message_pusher(push_content, default_chat, msg.type, reply=r_id)
+
+        else:
+            return
+
 
     elif default_chat != 0:
         message_pusher(msg.content, default_chat, msg.type, caption=msg.caption)
