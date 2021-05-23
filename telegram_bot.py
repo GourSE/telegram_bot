@@ -80,6 +80,7 @@ default_chat_echo_mention = False
 
 push_message_offset = 0
 push_message_typing_queue = []
+in_reply_id = 0
 
 if alert:
     print(f"{colour.RED}there is a new version of config.cfg, will set some setings to default{colour.reset}")
@@ -246,6 +247,7 @@ def message_pusher(message_content, chat_id, message_type, caption=None, reply=N
     global default_chat_echo
     global push_message_offset
 
+
     push_message_offset += 1
     this__offset = push_message_offset
 
@@ -313,9 +315,27 @@ def admin_message_handler(message_obj):
     global is_markdown
     global is_send_typing
     global default_chat_echo
-    global default_chat_echo_mention
+    global default_chat_echo_mention    
+    global in_reply_id
+    global admin_id
 
     msg = morg(message_obj)
+
+# %%
+
+    if in_reply_id != 0:
+        if msg.content == "/cancel" or msg.content == "/c":
+            in_reply_id = 0
+            bot.send_message(admin_id, "canceled")
+            return
+        else:
+            message_pusher(msg.content, default_chat, msg.type, msg.caption, in_reply_id)
+            bot.send_message(admin_id, "done")
+            in_reply_id = 0
+            return
+    else:
+        pass
+
 
     if "/id " in msg.content or msg.content == "/id":
         msg.content = msg.content.replace("/id ", "")
@@ -418,7 +438,8 @@ def admin_message_handler(message_obj):
             r_id = r_id.replace("/r", "")
             push_content = msg.content[msg.content.find(" "):]
         else:
-            return
+            r_id = msg.content.replace("/r", "")
+            in_reply_id == r_id
 
         if push_content != "" and push_content != " ":
             message_pusher(push_content, default_chat, msg.type, reply=r_id)
