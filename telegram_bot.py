@@ -329,9 +329,9 @@ def admin_message_handler(message_obj):
             bot.send_message(admin_id, "Canceled")
             return
         else:
-            message_pusher(msg.content, default_chat, msg.type, msg.caption, in_reply_id)
-            bot.send_message(admin_id, "Done")
             in_reply_id = 0
+            message_pusher(msg.content, default_chat, msg.type, msg.caption, in_reply_id)
+            bot.send_message(admin_id, "Done", msg.message_id)
             return
     else:
         pass
