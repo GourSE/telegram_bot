@@ -306,11 +306,17 @@ class chat():
                 self.chat_type = chat_info["type"]
 
                 if self.chat_type != "private":
-                    self.chat_bio = chat_info["description"]
+                    try:
+                        self.chat_bio = chat_info["description"]
+                    except:
+                        self.chat_bio = None
                     self.chat_title = chat_info["title"]
 
                 else:
-                    self.chat_bio = chat_info["bio"]
+                    try:
+                        self.chat_bio = chat_info["bio"]
+                    except:
+                        self.chat_bio = None
                     self.chat_title = chat_info["first_name"]
 
                 if self.chat_type != "private":
@@ -321,7 +327,10 @@ class chat():
                 try:
                     self.chat_photo_id = chat_info["photo"]["big_file_id"]
                 except:
-                    self.chat_photo_id = None
+                    try:
+                        self.chat_photo_id = chat_info["photo"]["small_file_id"]
+                    except:
+                        self.chat_photo_id = None
 
             except:
                 #in case
@@ -330,11 +339,18 @@ class chat():
                 self.chat_type = chat_info["result"]["type"]
 
                 if self.chat_type != "private":
-                    self.chat_bio = chat_info["result"]["description"]
+                    try:
+                        self.chat_bio = chat_info["result"]["description"]
+                    except:
+                        self.chat_bio = None
                     self.chat_title = chat_info["result"]["title"]
 
                 else:
-                    self.chat_bio = chat_info["result"]["bio"]
+                    try:
+                        self.chat_bio = chat_info["result"]["bio"]
+                    except:
+                        self.chat_bio = None
+
                     user_first = chat_info["result"]["first_name"]
                     try:
                         user_last = chat_info['result']['last_name']
@@ -350,7 +366,10 @@ class chat():
                 try:
                     self.chat_photo_id = chat_info["result"]["photo"]["big_file_id"] 
                 except:
-                    self.chat_photo_id = None
+                    try:
+                        self.chat_photo_id = chat_info["photo"]["small_file_id"]
+                    except:
+                        self.chat_photo_id = None
 
 
         except:

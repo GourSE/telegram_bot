@@ -376,6 +376,23 @@ Enter bot token > $ ")
                 print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
                 return False
 
+    def delete_message(self, chat_id, message_id):
+        url = f"{self.base}deleteMessage?chat_id={chat_id}&message_id={message_id}"
+        if message_id is not None and chat_id is not None:
+            try:
+                r = requests.get(url)
+                fed = json.loads(r.content)
+                if self.check_ok(fed):
+                    return True
+                else:
+                    return False
+            except requests.exceptions.ConnectionError as error:
+                print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
+                return False
+            except Exception as error:
+                print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
+                return False
+
     def get_updates(self, offset):
         url = f"{self.base}getUpdates?timeout=0"
         if offset is not None:
