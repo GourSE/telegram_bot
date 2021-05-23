@@ -52,8 +52,10 @@
       - 1 - on
   - to reply message
     > reply message in default chat
-    - `/r<reply_to_message_id> <text>`
+    - `/r<reply_to_message_id>`
       - if default chat is set and mentioned, bot will send a command to reply
+      
+      - the message ID will usually be given by bot, if bot's message is replied
 
 -------
 

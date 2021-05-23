@@ -196,9 +196,9 @@ def notify_admin(message_obj):
     if mention is True:
         s = bot.forward_message(admin_id, msg.chat_id, msg.message_id)
         if is_markdown:
-            a = bot.send_message(admin_id, f"`[{textf.hex(textf.escape(msg.usr_name))}](tg://user?id={textf.escape(textf.hex(str(msg.usr_id)))})`\n\nre: {textf.hex(textf.escape(msg.reply_message_text))}\n\nto reply this message: /r{msg.message_id} text", is_markdown=True)
+            a = bot.send_message(admin_id, f"`[{textf.hex(textf.escape(msg.usr_name))}](tg://user?id={textf.escape(textf.hex(str(msg.usr_id)))})`\n\nre: {textf.hex(textf.escape(msg.reply_message_text))}\n\nto reply this message: /r{msg.message_id}", is_markdown=True)
         else:
-            a = bot.send_message(admin_id, f"[{textf.hex(textf.escape(msg.usr_name))}](tg://user?id={textf.hex(str(msg.chat_id))})\n\nre: {textf.hex(textf.escape(msg.reply_message_text))}\n\nto reply this message: /r{msg.message_id} text", is_markdown=True)
+            a = bot.send_message(admin_id, f"[{textf.hex(textf.escape(msg.usr_name))}](tg://user?id={textf.hex(str(msg.chat_id))})\n\nre: {textf.hex(textf.escape(msg.reply_message_text))}\n\nto reply this message: /r{msg.message_id}", is_markdown=True)
 
         if s and a:
             return
@@ -326,11 +326,11 @@ def admin_message_handler(message_obj):
     if in_reply_id != 0:
         if msg.content == "/cancel" or msg.content == "/c":
             in_reply_id = 0
-            bot.send_message(admin_id, "canceled")
+            bot.send_message(admin_id, "Canceled")
             return
         else:
             message_pusher(msg.content, default_chat, msg.type, msg.caption, in_reply_id)
-            bot.send_message(admin_id, "done")
+            bot.send_message(admin_id, "Done")
             in_reply_id = 0
             return
     else:
@@ -438,15 +438,15 @@ def admin_message_handler(message_obj):
             r_id = r_id.replace("/r", "")
             push_content = msg.content[msg.content.find(" "):]
         else:
-            r_id = msg.content.replace("/r", "")
-            in_reply_id == r_id
+            push_content = ""
 
         if push_content != "" and push_content != " ":
             message_pusher(push_content, default_chat, msg.type, reply=r_id)
 
         else:
+            in_reply_id = msg.content.replace("/r", "")
+            message_pusher(f"enter message in order to reply message: {in_reply_id}\n/cancel to cancel", admin_id, "text")
             return
-
 
     elif default_chat != 0:
         message_pusher(msg.content, default_chat, msg.type, caption=msg.caption)
