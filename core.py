@@ -1,5 +1,6 @@
 # coding=utf-8
 
+from organizer import chat
 from colours import colour
 import logging
 import requests
@@ -411,6 +412,22 @@ Enter bot token > $ ")
             print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
             return False
 
+    def leave_chat(self, chat_id):
+        url = f"{self.base}leaveChat?chat_id={chat_id}"
+        if chat_id is not None:
+            try:
+                r = requests.get(url)
+                fed = json.loads(r.content)
+                if self.check_ok(fed):
+                    return True
+                else:
+                    return False
+            except requests.exceptions.ConnectionError as error:
+                print(f"\ncouldn't connect to server, more imformation:\n\n{error}\n\n")
+                return False
+            except Exception as error:
+                print(f"\nsomething went wrong, more imformation:\n\n{error}\n\n")
+                return False
 
     def get_me(self):
         url = f"{self.base}getMe"
