@@ -100,12 +100,12 @@ class message():
             except:
                 try:
                     file_unique_id = fed_message["sticker"]["file_id"]
-                    self.content = f"sticker: {file_unique_id}"
+                    self.content = f"{file_unique_id}"
                     self.type = "sticker"
                 except:
                     try:
                         file_unique_id = fed_message["photo"][file_unique_id]
-                        self.content = f"photo, {file_unique_id}"
+                        self.content = f"{file_unique_id}"
                         self.type = "photo"
                     except:
                         self.content = None
