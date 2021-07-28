@@ -8,6 +8,7 @@ class message():
         # define datas
         self.update_id =                        None
         self.content =                          None
+        self.file_unique_id =                   None
         self.type =                             None
         self.is_group =                         None
         self.chat_title =                       None
@@ -99,8 +100,10 @@ class message():
                 self.type = "text"
             except:
                 try:
-                    file_unique_id = fed_message["sticker"]["file_id"]
-                    self.content = f"{file_unique_id}"
+                    file_unique_id = fed_message["sticker"]["file_unique_id"]
+                    file_id = fed_message["sticker"]["file_id"]
+                    self.file_unique_id = f"{file_unique_id}"
+                    self.content = f"{file_id}"
                     self.type = "sticker"
                 except:
                     try:
