@@ -45,7 +45,7 @@ Enter bot token > $ ")
     def send_chat_action(self, chat_id, action):
         url = f"{self.base}sendChatAction?chat_id={chat_id}&action={action}"
         try:
-            r = requests.get(url)
+            r = requests.get(url, timeout=5)
             fed = json.loads(r.content)
             if self.check_ok(fed):
                 return True
@@ -92,9 +92,9 @@ Enter bot token > $ ")
 
         try:
             if document_location is not None:
-                r = requests.post(url, files = files)
+                r = requests.post(url, files = files, timeout=5)
             else:
-                r = requests.get(url)
+                r = requests.get(url, timeout=5)
 
             fed = json.loads(r.content)
             if self.check_ok(fed):
@@ -142,9 +142,9 @@ Enter bot token > $ ")
 
         try:
             if photo_location is not None:
-                r = requests.post(url, files = files)
+                r = requests.post(url, files = files, timeout=5)
             else:
-                r = requests.get(url)
+                r = requests.get(url, timeout=5)
 
             fed = json.loads(r.content)
             if self.check_ok(fed):
@@ -192,9 +192,9 @@ Enter bot token > $ ")
 
         try:
             if audio_location is not None:
-                r = requests.post(url, files = files)
+                r = requests.post(url, files = files, timeout=5)
             else:
-                r = requests.get(url)
+                r = requests.get(url, timeout=5)
 
             fed = json.loads(r.content)
             if self.check_ok(fed):
@@ -242,9 +242,9 @@ Enter bot token > $ ")
 
         try:
             if video_location is not None:
-                r = requests.post(url, files = files)
+                r = requests.post(url, files = files, timeout=5)
             else:
-                r = requests.get(url)
+                r = requests.get(url, timeout=5)
 
             fed = json.loads(r.content)
             if self.check_ok(fed):
@@ -292,9 +292,9 @@ Enter bot token > $ ")
 
         try:
             if animation_location is not None:
-                r = requests.post(url, files = files)
+                r = requests.post(url, files = files, timeout=5)
             else:
-                r = requests.get(url)
+                r = requests.get(url, timeout=5)
 
             fed = json.loads(r.content)
             if self.check_ok(fed):
@@ -323,7 +323,7 @@ Enter bot token > $ ")
         
         if message_content is not None:
             try:
-                r = requests.get(url)
+                r = requests.get(url, timeout=5)
                 fed = json.loads(r.content)
                 if self.check_ok(fed):
                     return True
@@ -339,7 +339,7 @@ Enter bot token > $ ")
     def forward_message(self, chat_id, from_chat_id, message_id):
         url = f"{self.base}forwardMessage?chat_id={chat_id}&from_chat_id={from_chat_id}&message_id={message_id}"
         try:
-            r = requests.get(url)
+            r = requests.get(url, timeout=5)
             fed = json.loads(r.content)
             if self.check_ok(fed):
                 return True
@@ -364,7 +364,7 @@ Enter bot token > $ ")
         url = f"{self.base}sendSticker?chat_id={chat_id}&sticker={sticker_id}{reply}"
         if sticker_id is not None:
             try:
-                r = requests.get(url)
+                r = requests.get(url, timeout=5)
                 fed = json.loads(r.content)
                 if self.check_ok(fed):
                     return True
@@ -381,7 +381,7 @@ Enter bot token > $ ")
         url = f"{self.base}deleteMessage?chat_id={chat_id}&message_id={message_id}"
         if message_id is not None and chat_id is not None:
             try:
-                r = requests.get(url)
+                r = requests.get(url, timeout=5)
                 fed = json.loads(r.content)
                 if self.check_ok(fed):
                     return True
@@ -399,7 +399,7 @@ Enter bot token > $ ")
         if offset is not None:
             url = f"{url}&offset={int(offset) + 1}"
         try:
-            r = requests.get(url)
+            r = requests.get(url, timeout=5)
             update = json.loads(r.content)
             if self.check_ok(update):
                 return update
@@ -416,7 +416,7 @@ Enter bot token > $ ")
         url = f"{self.base}leaveChat?chat_id={chat_id}"
         if chat_id is not None:
             try:
-                r = requests.get(url)
+                r = requests.get(url, timeout=5)
                 fed = json.loads(r.content)
                 if self.check_ok(fed):
                     return True
@@ -432,7 +432,7 @@ Enter bot token > $ ")
     def get_me(self):
         url = f"{self.base}getMe"
         try:
-            r = requests.get(url)
+            r = requests.get(url, timeout=5)
             bot_info = json.loads(r.content)
             if self.check_ok(bot_info):
                 return bot_info
@@ -448,7 +448,7 @@ Enter bot token > $ ")
     def get_chat(self, chat_id):
         url = f"{self.base}getChat?chat_id={chat_id}"
         try:
-            r = requests.get(url)
+            r = requests.get(url, timeout=5)
             chat_info = json.loads(r.content)
             if self.check_ok(chat_info):
                 return chat_info
@@ -462,7 +462,7 @@ Enter bot token > $ ")
             return False
 
     def is_downloadable(self, url):
-        h = requests.head(url, allow_redirects=True)
+        h = requests.head(url, allow_redirects=True, timeout=5)
         header = h.headers
         content_type = header.get('content-type')
         if 'text' in content_type.lower():
@@ -474,7 +474,7 @@ Enter bot token > $ ")
     def get_file(self, file_id):
         url = f"{self.base}getFile?file_id={file_id}"
         try:
-            r = requests.get(url)
+            r = requests.get(url, timeout=5)
             output = json.loads(r.content)
             if self.check_ok(output):
                 return output["result"]["file_path"]
@@ -495,7 +495,7 @@ Enter bot token > $ ")
         file_name = url[int(url.rfind("/") + 1):]
 
         if self.is_downloadable(url):
-            r = requests.get(url, allow_redirects=True)
+            r = requests.get(url, allow_redirects=True, timeout=5)
             with open(file_name, "wb") as file:
                 file.write(r.content)
                 return file_name
