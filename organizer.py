@@ -30,6 +30,12 @@ class message():
         self.reply_forward_usr_first =          None
         self.reply_is_forward =                 None
         self.caption =                          None
+        self.sticker_emoji =                    None
+        self.sticker_set_name =                 None
+        self.sticker_is_animated =              None
+        self.forward_from_id =                  None
+        self.is_forwarded =                     None
+        self.forward_sender_name =              None
 
         self.inline_id = None
         self.inline_query = None
@@ -99,20 +105,7 @@ class message():
                 self.content = fed_message["text"]
                 self.type = "text"
             except:
-                try:
-                    file_unique_id = fed_message["sticker"]["file_unique_id"]
-                    file_id = fed_message["sticker"]["file_id"]
-                    self.file_unique_id = f"{file_unique_id}"
-                    self.content = f"{file_id}"
-                    self.type = "sticker"
-                except:
-                    try:
-                        file_unique_id = fed_message["photo"][file_unique_id]
-                        self.content = f"{file_unique_id}"
-                        self.type = "photo"
-                    except:
-                        self.content = None
-                        self.type = None
+                pass
 
             #chat
             chat_type = fed_message["chat"]["type"]
@@ -129,8 +122,7 @@ class message():
                 self.chat_id = fed_message["from"]["id"]
 
 
-            #same as user ID, the t.me/ID one
-            #probably will be included in the future
+            #name
             user_first = fed_message["from"]["first_name"]
             try: 
                 user_last = fed_message['from']['last_name']
@@ -146,6 +138,25 @@ class message():
 
             #userID
             self.usr_id = fed_message["from"]["id"]
+
+            try:
+                self.forward_from_id = fed_message["forward_from"]["id"]
+                self.is_forwarded = True
+                #name
+                f_user_first = fed_message["forward_from"]["first_name"]
+                try: 
+                    f_user_last = fed_message['forward_from']['last_name']
+                    self.forward_sender_name = f"{f_user_first} {f_user_last}"
+                except:
+                    self.forward_sender_name = f"{f_user_first}"
+
+                self.usr_first = user_first
+            except:
+                try:
+                    self.forward_sender_name = fed_message["forward_sender_name"]
+                    self.is_forwarded = True
+                except:
+                    pass
             
             #check if the message is a reply_to
             try:
@@ -167,11 +178,12 @@ class message():
                     self.reply_usr_name = f"{reply_user_first} {reply_user_last}"
                 except:
                     self.reply_usr_name = f"{reply_user_first}"
+
                 self.reply_usr_first = reply_user_first
 
                 
                 try:
-                    #check if message is forwared
+                    #check if reply message is forwared
                     self.reply_forward_usr_id = fed_message["reply_to_message"]["forward_from"]["id"]
                     self.reply_forward_usr_first = fed_message["reply_to_message"]["forward_from"]["first_name"]
                     self.reply_is_forward = True
@@ -190,6 +202,21 @@ class message():
                 self.reply_is_forward = False
                 self.reply_message_text = None
             
+            # for stickers
+            try:
+                self.file_unique_id = fed_message["sticker"]["file_unique_id"]
+                self.content = fed_message["sticker"]["file_id"]
+                self.type = "sticker"
+                self.sticker_emoji = fed_message["sticker"]["emoji"]
+                self.sticker_is_animated = fed_message["sticker"]["is_animated"]
+                try:
+                    self.sticker_set_name = fed_message["sticker"]["set_name"]
+                except:
+                    pass
+            except:
+                pass
+
+
             # for documents
 
 
