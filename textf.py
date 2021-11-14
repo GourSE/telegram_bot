@@ -33,3 +33,8 @@ def hex(fed):
     else:
         result = fed
     return result
+
+def full(fed):
+    result = escape(fed)
+    result = hex(result)
+    return result
