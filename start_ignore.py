@@ -42,12 +42,16 @@ def main():
     message_count = 0
     offset = None
 
-    ###################RETURN MESSAGE SETTINGS IN CONFIG###################
-    return_message = config.get("startup_ignore_settings", "return_message")
-    return_message_type = config.get("startup_ignore_settings", "return_message_type")
-    send_return_message = config.get("startup_ignore_settings", "send_return_message")
-    return_message_rule = config.get("startup_ignore_settings", "return_message_rule")
-    #######################################################################
+    try:
+        ###################RETURN MESSAGE SETTINGS IN CONFIG###################
+        return_message = config.get("startup_ignore_settings", "return_message")
+        return_message_type = config.get("startup_ignore_settings", "return_message_type")
+        send_return_message = config.get("startup_ignore_settings", "send_return_message")
+        return_message_rule = config.get("startup_ignore_settings", "return_message_rule")
+        #######################################################################
+    except cfg.NoOptionError as error:
+        print(f"{colour.WARNING}You missout some options{colour.reset}\nplease run {colour.GREEN}make replace{colour.reset} to make the new config file and re-fill it")
+        os._exit(1)
 
     return_message = textf.full(return_message)
 
