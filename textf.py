@@ -2,6 +2,7 @@
 
 def escape(fed):
     if fed is not None:
+        fed = str(fed)
         result = fed.replace("\\", "\\\\")
         result = result.replace("`", "\\`")
         result = result.replace("*", "\\*")
@@ -26,6 +27,7 @@ def escape(fed):
 def hex(fed):
     # use fullwidth char
     if fed is not None:
+        fed = str(fed)
         result = fed.replace("&", "＆")
         result = result.replace("+", "＋")
         result = result.replace("#", "＃")
