@@ -51,8 +51,10 @@ class message():
             print('message_organizer: message fed is None type')
             exit()
         else:
-            #get_updates_result = json.loads(str(get_updates_result))
-            pass
+            try:
+                fed_message = get_updates_result["message"]
+            except:
+                get_updates_result = json.loads(str(get_updates_result))
         try:
             try:
                 #intended
