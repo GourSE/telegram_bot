@@ -54,7 +54,8 @@ class message():
             try:
                 fed_message = get_updates_result["message"]
             except:
-                get_updates_result = json.loads(str(get_updates_result))
+                print("foooo")
+                #get_updates_result = json.loads(get_updates_result)
         try:
             try:
                 #intended
