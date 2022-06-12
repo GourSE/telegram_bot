@@ -107,8 +107,7 @@ Enter admin chat ID > $ ")
 else:
     pass
 
-# set user settings 
-# get lowers from true and false
+# not case sensitive
 
 if is_send_typing.lower() == "true":
     is_send_typing = True
@@ -135,51 +134,50 @@ if is_start_ignore.lower() == "true":
 elif is_start_ignore.lower() == "false":
     is_start_ignore = False
 
-
+# fed offset is to decide witch message to be send first
 def send_typing(text, chat_id, msg_type, fed_offset):
     global is_markdown
     global push_message_typing_queue
     global admin_id
 
-    if msg_type == "text" and str(chat_id) != str(admin_id):
+    if msg_type != "text":
+        return "Message is not text"
+    if str(chat_id) == str(admin_id):
+        return "Will not send typing action in admin chat"
 
-        push_message_typing_queue.append(fed_offset)
+    push_message_typing_queue.append(fed_offset)
 
-        tag = ""
+    tag = ""
 
-        if is_markdown and text.find("(tg://user?id=") != -1:
-            tag = text.replace("\\)", "")
-            tag = tag.replace("\\[", "")
-            tag = tag[:tag.find(")") + 1]
-            tag = tag[tag.find("["):]
+    if is_markdown and text.find("(tg://user?id=") == -1:
+        pass
+    tag = text.replace("\\)", "")
+    tag = tag.replace("\\[", "")
+    tag = tag[:tag.find(")") + 1]
+    tag = tag[tag.find("["):]
+
+    while True:
+        if push_message_typing_queue[0] == fed_offset:
+            break
         else:
             pass
 
-        while True:
-            if push_message_typing_queue[0] == fed_offset:
-                break
-            else:
-                pass
-
-        if tag != "":
-            lenght = len(text) - len(tag)
-        else:
-            lenght = len(text)
-        
-        loop = int(lenght) * 0.2
-        
-        while loop > 0:
-            loop -= 1
-            bot.send_chat_action(chat_id, "typing")
-
-        del push_message_typing_queue[0]
-
-        return "Done"
+    if tag != "":
+        lenght = len(text) - len(tag)
     else:
-        return "Message is not text"
+        lenght = len(text)
+    
+    loop = int(lenght) * 0.2
+    
+    while loop > 0:
+        loop -= 1
+        bot.send_chat_action(chat_id, "typing")
+
+    del push_message_typing_queue[0]
+
+    return "Done"
 
 # admin "will" know who sent the message
-
 def notify_admin(message_obj):
     global admin_id
     global is_markdown
@@ -193,17 +191,17 @@ def notify_admin(message_obj):
     if str(boti.id) == str(msg.reply_usr_id):
         mention = True
 
+    # s and a will be True or False returned by core
     if mention is True:
         s = bot.forward_message(admin_id, msg.chat_id, msg.message_id)
-        if is_markdown:
-            a = bot.send_message(admin_id, f"`[{textf.hex(textf.escape(msg.usr_name))}](tg://user?id={textf.escape(textf.hex(str(msg.usr_id)))})`\n\nre: {textf.hex(textf.escape(msg.reply_message_text))}\n\nto reply this message: /r{msg.message_id}", is_markdown=True)
-        else:
+        if not is_markdown:
             a = bot.send_message(admin_id, f"[{textf.hex(textf.escape(msg.usr_name))}](tg://user?id={textf.hex(str(msg.chat_id))})\n\nre: {textf.hex(textf.escape(msg.reply_message_text))}\n\nto reply this message: /r{msg.message_id}", is_markdown=True)
 
-        if s and a:
-            return
-        else:
+        a = bot.send_message(admin_id, f"`[{textf.hex(textf.escape(msg.usr_name))}](tg://user?id={textf.escape(textf.hex(str(msg.usr_id)))})`\n\nre: {textf.hex(textf.escape(msg.reply_message_text))}\n\nto reply this message: /r{msg.message_id}", is_markdown=True)
+
+        if s is not True or a is not True:
             print(f"{colour.RED}echo from {msg.chat_id} error{colour.reset}")
+            return
         return
     elif mention is False and default_chat_echo:
         s = bot.forward_message(admin_id, msg.chat_id, msg.message_id)

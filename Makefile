@@ -24,8 +24,8 @@ ifeq ($(detected_OS), Linux)
 
 telegram_bot: src/main.c
 
-	mkdir -p ~/bin
-	$(CC) src/main.c -o ~/bin/telegram_bot
+	mkdir -p ~/.local/bin
+	$(CC) src/main.c -o ~/.local/bin/telegram_bot
 	mkdir -p ~/.local/share/telegram_bot
 	cp -r -u ./*.py ~/.local/share/telegram_bot
 
@@ -50,8 +50,8 @@ endif
 
 replace: src/main.c
 
-	mkdir -p ~/bin
-	$(CC) src/main.c -o ~/bin/telegram_bot
+	mkdir -p ~/.local/bin
+	$(CC) src/main.c -o ~/.local/bin/telegram_bot
 	mkdir -p ~/.local/share/telegram_bot
 	cp -r -u ./*.py ./config.cfg ~/.local/share/telegram_bot
 
@@ -72,7 +72,7 @@ current: src/main.c
 	@echo "\ndone"
 
 clean:
-	rm -f ~/bin/telegram_bot
+	rm -f ~/.local/bin/telegram_bot
 	rm -f -r ~/.local/share/telegram_bot
 	rm -f telegram_bot
 
